@@ -193,7 +193,8 @@ home = f'''
 </div></section>
 
 <section class="tint" id="gallery"><div class="wrap">
-  <div class="sec-head"><h2>From the lab</h2><p>Figures from recent projects. Scroll sideways.</p></div>
+  <div class="sec-head"><h2>From the lab</h2><p>Figures from recent projects. Click one to enlarge it.</p></div>
+  <div class="carousel"><button class="car-btn prev" aria-label="Scroll left">‹</button>
   <div class="strip">
     <figure><img src="assets/img/figures/iota-simulation.gif" alt="WRF simulations of hurricane Iota"><figcaption>WRF simulations of hurricane Iota.</figcaption></figure>
     <figure><picture><source srcset="assets/img/figures/global-wind-da.webp" type="image/webp"><img class="fit" src="assets/img/figures/global-wind-da.jpg" alt="Global wind field at 925 mb: reference, background and analyses from several ensemble filters"></picture><figcaption>Global wind at 925 mb: reference, background and analyses from several ensemble-based filters.</figcaption></figure>
@@ -202,6 +203,7 @@ home = f'''
     <figure><img src="assets/img/figures/levels-of-PM2.5.jpg" alt="PM2.5 levels per interval"><figcaption>Levels of PM2.5 per interval in Barranquilla.</figcaption></figure>
     <figure><img src="assets/img/figures/open-crime-estimation.jpg" alt="Open crime estimation"><figcaption>Open Crime Estimation: probability surface for different regions given a user profile.</figcaption></figure>
   </div>
+  <button class="car-btn next" aria-label="Scroll right">›</button></div>
 </div></section>
 
 
