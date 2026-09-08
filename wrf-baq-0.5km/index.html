@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WRF-BAQ 0.5 km forecast — AML-CS</title>
+<meta name="description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<meta property="og:title" content="WRF-BAQ 0.5 km forecast — AML-CS"><meta property="og:description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<link rel="icon" href="../assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="../assets/css/wrf-baq.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script><script src="../assets/js/wrf-baq.js"></script><script>document.addEventListener("DOMContentLoaded",()=>{if(window.initWRFBaqApp)window.initWRFBaqApp()});</script>
+</head>
+<body>
+<header class="site"><div class="wrap nav">
+  <a href="../"><img class="logo" src="../assets/img/logo.png" alt="AML-CS — Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul><li><a href="../">Home</a></li><li><a href="../#research">Research</a></li><li><a href="../projects/">Projects</a></li><li><a href="../publications/">Publications</a></li><li><a href="../people/">People</a></li><li><a href="../talks/">Talks & events</a></li><li><a href="../resources/" aria-current="page">Resources</a></li><li><a class="cta" href="mailto:aml-cs@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
+</div></header>
+<div class="pagehead"><div class="wrap">
+  <div><div class="crumb"><a href="../">Home</a> / WRF-BAQ 0.5 km</div><h1>WRF-BAQ 0.5 km forecast</h1><p>Barranquilla forecasts at 0.5 km grid spacing, updated every 3 hours on the Granado HPC cluster at Universidad del Norte.</p></div>
+  <div></div>
+</div></div><section><div class="wrap"><article class="prose" style="max-width:none"><p>The BAQ 0.5km Forecast system is updated every 3h and runs on the Granado HPC cluster at Universidad del Norte.</p>
+<p>Fetches data from NOAA (GFS) and OGIMET (METAR).
+Surface level observations are interpolated into the GRIB files.</p>
+<ul>
+<li><strong>Forecast:</strong> +2-4h.</li>
+<li><strong>Grid points distance:</strong> 0.5km.</li>
+<li><strong>GFS:</strong> 0.25 degree resolution, global longitude-latitude grid.</li>
+<li><strong>GFS cycle:</strong> 00 UTC.</li>
+<li><strong>Altitude:</strong> 150m.</li>
+<li><strong>Isobaric level:</strong> 1000hPa.</li>
+<li><strong>Interactive map grid size:</strong> 26x15.</li>
+<li><strong>Interactive map points distance:</strong> 2km.</li>
+</ul>
+<div id="wrf-baq-app" class="hide">
+    <span id="loading">Loading...</span>
+    <div>
+    <h2 id="report-title"></h2>
+        <div class="select-container">
+            <label for="variables-select">Choose a variable:</label>
+            <select id="variables-select" name="variables"></select>
+        </div>
+        <div class="maps-container">
+            <div id="maps-gif" class="img-loader"></div>
+            <div id="maps-folium"></div>
+        </div>
+    </div>
+  <table id="report-data"></table>
+  <div>
+    <h2>All Reports</h2>
+    <table id="all-reports"></table>
+    <div class="pagination">
+      <button id="newer" disabled>Newer</button>
+      <button id="older">Older</button>
+    </div>
+  </div>
+</div>
+
+<hr />
+<h4>WRF domain (WRFV4.3)</h4>
+<pre><code> &amp;domains
+ time_step                           = 2,
+ time_step_fract_num                 = 0,
+ time_step_fract_den                 = 1,
+ max_dom                             = 1,
+ e_we                                = 91,
+ e_sn                                = 82,
+ e_vert                              = 35,
+ p_top_requested                     = 5000,
+ num_metgrid_levels                  = 34,
+ num_metgrid_soil_levels             = 4,
+ dx                                  = 356.324,
+ dy                                  = 356.324,
+ grid_id                             = 1,
+ parent_id                           = 1,
+ i_parent_start                      = 1,
+ j_parent_start                      = 1,
+ parent_grid_ratio                   = 1,
+ parent_time_step_ratio              = 1,
+ feedback                            = 1,
+ smooth_option                       = 0
+ /
+</code></pre>
+<h4>WPS geogrid (WPSV4.3)</h4>
+<pre><code>&amp;geogrid
+ parent_id                           = 1,
+ parent_grid_ratio                   = 1,
+ i_parent_start                      = 1,
+ j_parent_start                      = 1,
+ e_we                                = 91,
+ e_sn                                = 82,
+ geog_data_res                       = 'default',
+ dx                                  = 0.003205,
+ dy                                  = 0.003205,
+ map_proj                            = 'lat-lon',
+ ref_lat                             = 10.981,
+ ref_lon                             = -74.822,
+ truelat1                            = 10.981,
+ truelat2                            = 10.981,
+ stand_lon                           = -74.822,
+ ref_x                               = 45.5,
+ ref_y                               = 41.0,
+/
+</code></pre>
+<p>Source code: https://github.com/AML-CS/wrf-baq-0.5km</p>
+<script>window.initWRFBaqApp();</script></article></div></section>
+<footer class="site"><div class="wrap">
+  <div>
+    <a href="../"><img class="logo-foot" src="../assets/img/logo.png" alt="AML-CS"></a>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:aml-cs@uninorte.edu.co">aml-cs@uninorte.edu.co</a></p>
+  </div>
+  <div><h5>Lab</h5><ul><li><a href="../#research">Research</a></li><li><a href="../projects/">Projects &amp; funding</a></li><li><a href="../people/">People</a></li></ul></div>
+  <div><h5>Output</h5><ul><li><a href="../publications/">Publications</a></li><li><a href="../talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="../resources/">HPC guides</a></li><li><a href="../wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li><li><a href="https://github.com/enino84/TEDA">TEDA</a></li></ul></div>
+  <div class="copy"><span>© 2026 AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
+</div></footer>
+<script src="../assets/js/site.js"></script>
+</body></html>

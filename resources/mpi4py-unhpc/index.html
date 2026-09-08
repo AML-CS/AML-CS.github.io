@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set up mpi4py on UN-HPC — AML-CS</title>
+<meta name="description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<meta property="og:title" content="Set up mpi4py on UN-HPC — AML-CS"><meta property="og:description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<link rel="icon" href="../../assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+
+</head>
+<body>
+<header class="site"><div class="wrap nav">
+  <a href="../../"><img class="logo" src="../../assets/img/logo.png" alt="AML-CS — Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/" aria-current="page">Resources</a></li><li><a class="cta" href="mailto:aml-cs@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
+</div></header>
+<div class="pagehead"><div class="wrap">
+  <div><div class="crumb"><a href="../../">Home</a> / <a href="../">Resources</a> / Guide</div><h1>Set up mpi4py on UN-HPC</h1><p>mpi4py with miniconda, with examples for interactive sessions and SBATCH jobs.</p></div>
+  <div></div>
+</div></div><section><div class="wrap"><article class="prose"><p>How to setup mpi4py using miniconda in Centos 7 - OpenHPC. Including examples for run an Interactive session and SBATCH.</p>
+<h2>Setup conda env</h2>
+<ul>
+<li>Load nested modules</li>
+</ul>
+<pre><code class="language-bash">module purge
+module load miniconda gnu8/8.3.0 openmpi3/3.1.4
+</code></pre>
+<ul>
+<li>Create conda env</li>
+</ul>
+<pre><code class="language-bash">conda create --name mpi4py python=3.7 -y
+eval &quot;$(conda shell.bash hook)&quot;
+conda activate mpi4py
+</code></pre>
+<ul>
+<li>Install python libs</li>
+</ul>
+<pre><code class="language-bash">export MPICC=$(which mpicc)
+pip install numpy matplotlib seaborn scipy netCDF4 pandas mpi4py
+</code></pre>
+<h2>Run interactive session</h2>
+<pre><code class="language-bash">salloc --job-name &quot;mpi4py-test&quot; --nodes 1 --ntasks 4 --cpus-per-task=1 -t 24:00:00 -A syseng -p syseng
+
+module purge
+module load miniconda gnu8/8.3.0 openmpi3/3.1.4
+
+eval &quot;$(conda shell.bash hook)&quot;
+conda activate mpi4py
+
+mpiexec -n 4 python test_CPU.py 2&gt; err.log
+</code></pre>
+<h2>Run SBATCH</h2>
+<pre><code class="language-bash">#!/bin/bash
+#SBATCH --job-name=mpi4py-test   # create a name for your job
+#SBATCH --nodes=1                # node count
+#SBATCH --ntasks=4               # total number of tasks
+#SBATCH --cpus-per-task=1        # cpu-cores per task
+#SBATCH --time=24:00:00          # total run time limit (HH:MM:SS)
+#SBATCH --account=syseng
+#SBATCH --partition=syseng
+
+module purge
+module load miniconda gnu8/8.3.0 openmpi3/3.1.4
+
+eval &quot;$(conda shell.bash hook)&quot;
+conda activate mpi4py
+
+mpiexec -n 4 python test_CPU.py
+</code></pre>
+<h2>More info</h2>
+<ul>
+<li>https://researchcomputing.princeton.edu/support/knowledge-base/mpi4py</li>
+<li>https://batchdocs.web.cern.ch/linuxhpc/introduction.html</li>
+<li>https://docs.conda.io/projects/conda/en/4.6.1/user-guide/tasks/manage-environments.html</li>
+<li>https://pdc-support.github.io/introduction-to-mpi/setup.html</li>
+</ul></article></div></section>
+<footer class="site"><div class="wrap">
+  <div>
+    <a href="../../"><img class="logo-foot" src="../../assets/img/logo.png" alt="AML-CS"></a>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:aml-cs@uninorte.edu.co">aml-cs@uninorte.edu.co</a></p>
+  </div>
+  <div><h5>Lab</h5><ul><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects &amp; funding</a></li><li><a href="../../people/">People</a></li></ul></div>
+  <div><h5>Output</h5><ul><li><a href="../../publications/">Publications</a></li><li><a href="../../talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="../../resources/">HPC guides</a></li><li><a href="../../wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li><li><a href="https://github.com/enino84/TEDA">TEDA</a></li></ul></div>
+  <div class="copy"><span>© 2026 AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
+</div></footer>
+<script src="../../assets/js/site.js"></script>
+</body></html>

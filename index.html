@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AML-CS — Applied Math and Computer Science Lab · Universidad del Norte</title>
+<meta name="description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<meta property="og:title" content="AML-CS — Applied Math and Computer Science Lab · Universidad del Norte"><meta property="og:description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<link rel="icon" href="./assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/site.css">
+
+</head>
+<body>
+<header class="site"><div class="wrap nav">
+  <a href="./"><img class="logo" src="./assets/img/logo.png" alt="AML-CS — Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul><li><a href="./" aria-current="page">Home</a></li><li><a href="./#research">Research</a></li><li><a href="./projects/">Projects</a></li><li><a href="./publications/">Publications</a></li><li><a href="./people/">People</a></li><li><a href="./talks/">Talks & events</a></li><li><a href="./resources/">Resources</a></li><li><a class="cta" href="mailto:aml-cs@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
+</div></header>
+
+<section class="hero">
+  <canvas id="da" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div>
+      <h1>We teach models to listen to data.</h1>
+      <p>The Applied Math and Computer Science Lab in Barranquilla, Colombia, builds data assimilation, inverse-problem and optimization methods that turn noisy observations into better forecasts — for weather, air quality and the city around us.</p>
+      <div class="actions"><a class="btn primary" href="#research">Explore our research</a><a class="btn ghost" href="publications/">Read the papers</a></div>
+    </div><div></div>
+    <div class="legend"><span><i style="background:#F0A92B"></i>ensemble members</span><span><i style="background:#fff"></i>observation</span><span><i style="background:#4BA2DE"></i>analysis</span></div>
+  </div>
+</section>
+<div class="stats"><div class="wrap">
+  <div><b>2017</b>Founded at Universidad del Norte</div>
+  <div><b>49</b>Journal &amp; conference papers</div>
+  <div><b>4</b>Open-source software packages</div>
+  <div><b>WRF · 0.5 km</b>Operational forecasts for Barranquilla</div>
+</div></div>
+<div class="sponsors"><div class="wrap">
+  <span>Research supported by</span>
+  <a class="sponsor" href="projects/#minciencias"><img src="assets/img/sponsors/minciencias.png" alt="Minciencias — Ministerio de Ciencia, Tecnología e Innovación"></a>
+  <a class="sponsor" href="projects/#banrep"><img src="assets/img/sponsors/banco-republica.png" alt="Banco de la República"><span>Banco de la República<small>FPIT research fund</small></span></a>
+  <a class="sponsor" href="https://www.uninorte.edu.co/"><img src="assets/img/sponsors/uninorte-logo.jpg" alt="Universidad del Norte"></a>
+</div></div>
+
+<section id="research"><div class="wrap">
+  <div class="sec-head"><h2>What we work on</h2><p>A space that brings together people from different fields of science, motivated to solve real problems through scientific computing, mathematics and statistics.</p></div>
+  <div class="areas">
+    <div class="area"><h3>Data assimilation</h3><p>Ensemble Kalman filters, 4D-Var and hybrid MCMC schemes that fold observations into numerical models — including non-Gaussian and adjoint-free formulations.</p><span>Core line</span></div>
+    <div class="area"><h3>Inverse problems &amp; parameter estimation</h3><p>Recovering what we cannot measure directly from what we can, with shrinkage covariance estimators and modified Cholesky decompositions.</p><span>Core line</span></div>
+    <div class="area"><h3>Numerical optimization</h3><p>Trust-region, line-search and random-direction methods for large, expensive objective functions.</p><span>Methods</span></div>
+    <div class="area"><h3>Combinatorial optimization</h3><p>Tabu search, simulated annealing and nature-inspired algorithms applied to localization and scheduling problems.</p><span>Methods</span></div>
+    <div class="area"><h3>Bayesian inference</h3><p>Posterior sampling and uncertainty quantification for physical models.</p><span>Methods</span></div>
+    <div class="area"><h3>High performance computing</h3><p>Running WRF, MPI and parallel Python on UN-HPC to make all of the above feasible at real-world scale.</p><span>Infrastructure</span></div>
+    <div class="area"><h3>Data science &amp; engineering</h3><p>Urban analytics, climate downscaling and PM2.5 monitoring for Barranquilla and the Colombian Caribbean.</p><span>Applications</span></div>
+  </div>
+</div></section>
+
+<section class="tint" id="projects"><div class="wrap">
+  <div class="sec-head"><h2>Funded projects</h2><p>Externally funded research where the lab leads or co-leads the work. Full details on the <a href="projects/">projects page</a>.</p></div>
+  <div class="projects">
+    <div class="proj amber">
+      <div class="funder">Banco de la República · FPIT · Project 5.056</div>
+      <h3>High-resolution atmospheric data repository for the Atlántico department via data assimilation and machine learning</h3>
+      <p>A 1980–2100 dataset of wind, temperature and humidity for the Atlántico region, produced by downscaling NCEP-DOE Reanalysis 2 with data assimilation and machine learning. Released as the open-source TEDA framework.</p>
+      <div class="row"><span><b>Role</b> Principal investigator</span><span><b>2024–2025</b></span><span class="status done">Completed</span></div>
+    </div>
+    <div class="proj">
+      <div class="funder">Minciencias · SIGP 68747 / 68790 · with EAFIT and Universidad de Antioquia</div>
+      <h3>ExPoR2 — Ensemble of models to estimate human exposure to air pollutants in urban areas</h3>
+      <p>Part of the ExPoR2 programme on human exposure to atmospheric pollution as a decision-making tool. The lab contributes ensemble-based data assimilation for air-quality models in the Tropical Andes.</p>
+      <div class="row"><span><b>Role</b> Co-investigator</span><span><b>2020–present</b></span><span class="status">Active</span></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="publications"><div class="wrap">
+  <div class="feat">
+    <figure><img src="assets/img/figures/error-bounds.jpg" alt="Error bounds for solving linear systems in the preconditioned Crank–Nicolson scheme"><figcaption>Error bounds in the preconditioned Crank–Nicolson scheme. The black line separates convergence from divergence in proposal steps.</figcaption></figure>
+    <div>
+      <h3>A numerical method for solving linear systems in the preconditioned Crank–Nicolson algorithm</h3>
+      <div class="meta">Nino-Ruiz, E. D. · Applied Mathematics Letters, Elsevier · 2020</div>
+      <p>When can the linear solves inside pCN proposals be trusted? The paper gives explicit bounds on the error they introduce and a practical rule for choosing the step.</p>
+      <a class="btn primary" href="https://doi.org/10.1016/j.aml.2020.106254">Read at the publisher</a>
+    </div>
+  </div>
+  <div class="sec-head" style="margin-top:88px"><h2>Recent publications</h2><p>Journal, conference and software papers from the group and its collaborators.</p></div>
+  <ul class="pubs"><li><span class="year">2026</span><div><div class="t"><a href="https://doi.org/10.1016/j.softx.2026.102738">PyTEDA-web: A FastAPI platform for interactive data assimilation benchmarking with real-time streaming and persistent experiment tracking</a></div><div class="v"><b>Nino-Ruiz, E. D.</b> — SoftwareX, 34, 102738 · Elsevier</div></div><a class="l" href="https://doi.org/10.1016/j.softx.2026.102738">Article</a></li><li><span class="year">2026</span><div><div class="t"><a href="https://doi.org/10.1080/17450128.2026.2646858">Language development and inequality in early childhood: a study in Caribbean Colombian contexts</a></div><div class="v"><b>Nino-Ruiz, E. D.</b> et al. — Vulnerable Children and Youth Studies · Taylor & Francis</div></div><a class="l" href="https://doi.org/10.1080/17450128.2026.2646858">Article</a></li><li><span class="year">2025</span><div><div class="t"><a href="https://doi.org/10.1016/j.softx.2025.102297">TEDA: A lightweight Python framework for educational data assimilation</a></div><div class="v"><b>Nino-Ruiz, E. D.</b> — SoftwareX, 31, 102297 · Elsevier</div></div><a class="l" href="https://doi.org/10.1016/j.softx.2025.102297">Article</a></li><li><span class="year">2025</span><div><div class="t"><a href="https://doi.org/10.1016/j.rinam.2025.100629">Improved Rosenbrock method with error estimator and Jacobian approximation using complex step</a></div><div class="v">Perez Rivera, J. D., Turizo, D., <b>Nino-Ruiz, E. D.</b>, Montoya, O. D. — Results in Applied Mathematics, 27, 100629 · Elsevier</div></div><a class="l" href="https://doi.org/10.1016/j.rinam.2025.100629">Article</a></li><li><span class="year">2025</span><div><div class="t"><a href="https://doi.org/10.1016/j.softx.2025.102125">Statistical package for computing precision covariance matrices via modified Cholesky decomposition</a></div><div class="v"><b>Nino-Ruiz, E. D.</b>, <b>Cabarcas Arrieta, D. S.</b>, <b>Fernandez Quiroz, G. R.</b>, <b>Quintero, N.</b> — SoftwareX, 30, 102125 · Elsevier</div></div><a class="l" href="https://doi.org/10.1016/j.softx.2025.102125">Article</a></li><li><span class="year">2024</span><div><div class="t"><a href="https://doi.org/10.3390/atmos15121412">A 4D-EnKF method via a modified Cholesky decomposition and line search optimization for non-linear data assimilation</a></div><div class="v"><b>Nino-Ruiz, E. D.</b>, <b>Diaz-Rodriguez, J.</b> — Atmosphere, 15(12), 1412 · MDPI</div></div><a class="l" href="https://doi.org/10.3390/atmos15121412">Article</a></li></ul>
+  <div class="more"><a href="publications/">All 49 publications</a></div>
+</div></section>
+
+<section class="tint" id="gallery"><div class="wrap">
+  <div class="sec-head"><h2>From the lab</h2><p>Figures from recent projects. Scroll sideways.</p></div>
+  <div class="strip">
+    <figure><img src="assets/img/figures/iota-simulation.gif" alt="WRF simulations of hurricane Iota"><figcaption>WRF simulations of hurricane Iota.</figcaption></figure>
+    <figure><img src="assets/img/figures/worldwide-temperatures.jpg" alt="Worldwide surface temperatures"><figcaption>Worldwide temperature levels at surface.</figcaption></figure>
+    <figure><img src="assets/img/figures/urban-analytics.jpg" alt="Car accidents in Barranquilla"><figcaption>Urban analytics: car accidents in Barranquilla.</figcaption></figure>
+    <figure><img src="assets/img/figures/estimation-of-PM2.jpg" alt="PM2.5 estimation"><figcaption>Estimation of PM2.5 levels via Markovian models.</figcaption></figure>
+    <figure><img src="assets/img/figures/levels-of-PM2.5.jpg" alt="PM2.5 levels per interval"><figcaption>Levels of PM2.5 per interval in Barranquilla.</figcaption></figure>
+    <figure><img src="assets/img/figures/open-crime-estimation.jpg" alt="Open crime estimation"><figcaption>Open Crime Estimation: probability surface for different regions given a user profile.</figcaption></figure>
+  </div>
+</div></section>
+
+<section class="dark" id="people"><div class="wrap">
+  <div class="sec-head"><h2>People</h2><p>Students face problems in data assimilation, inverse problems, applied statistics and numerical optimization from their first semester in the group.</p></div>
+  <div class="director">
+    <img src="assets/img/people/elias-nino.jpg" alt="Elias D. Nino-Ruiz">
+    <div>
+      <h3>Elias D. Nino-Ruiz, Ph.D.</h3>
+      <div class="role">Director · Founded the lab in April 2017</div>
+      <p>Data-driven models are of primary interest for us; it is fascinating to see what data can tell us about the underlying physical process. Feel free to contact me if you want to be part of the group.</p>
+      <p style="margin-top:14px"><a href="https://enino84.github.io/">Personal site</a> &nbsp;·&nbsp; <a href="people/">Meet the whole team</a></p>
+    </div>
+  </div>
+</div></section>
+
+<section id="resources"><div class="wrap two" style="align-items:center">
+  <div><h2 style="font-size:32px">Resources for the group</h2><p style="color:var(--muted);margin:10px 0 0">Practical guides we wrote so that nobody has to fight the cluster twice.</p></div>
+  <ul class="pubs" style="border-top:0">
+    <li style="grid-template-columns:1fr auto"><div class="t"><a href="resources/wrf-wrfda-unhpc/">Run WRF and WRFDA on UN-HPC</a></div><a class="l" href="resources/wrf-wrfda-unhpc/">Guide</a></li>
+    <li style="grid-template-columns:1fr auto"><div class="t"><a href="resources/mpi4py-unhpc/">Set up mpi4py on UN-HPC</a></div><a class="l" href="resources/mpi4py-unhpc/">Guide</a></li>
+    <li style="grid-template-columns:1fr auto"><div class="t"><a href="resources/python-conda-unhpc/">Run Python scripts with conda on UN-HPC</a></div><a class="l" href="resources/python-conda-unhpc/">Guide</a></li>
+    <li style="grid-template-columns:1fr auto"><div class="t"><a href="wrf-baq-0.5km/">WRF Barranquilla 0.5 km forecast viewer</a></div><a class="l" href="wrf-baq-0.5km/">Open</a></li>
+  </ul>
+</div></section>
+
+<footer class="site"><div class="wrap">
+  <div>
+    <a href="./"><img class="logo-foot" src="./assets/img/logo.png" alt="AML-CS"></a>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:aml-cs@uninorte.edu.co">aml-cs@uninorte.edu.co</a></p>
+  </div>
+  <div><h5>Lab</h5><ul><li><a href="./#research">Research</a></li><li><a href="./projects/">Projects &amp; funding</a></li><li><a href="./people/">People</a></li></ul></div>
+  <div><h5>Output</h5><ul><li><a href="./publications/">Publications</a></li><li><a href="./talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="./resources/">HPC guides</a></li><li><a href="./wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li><li><a href="https://github.com/enino84/TEDA">TEDA</a></li></ul></div>
+  <div class="copy"><span>© 2026 AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
+</div></footer>
+<script src="./assets/js/site.js"></script>
+</body></html>

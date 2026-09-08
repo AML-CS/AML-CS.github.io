@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run WRF and WRFDA on UN-HPC — AML-CS</title>
+<meta name="description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<meta property="og:title" content="Run WRF and WRFDA on UN-HPC — AML-CS"><meta property="og:description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<link rel="icon" href="../../assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+
+</head>
+<body>
+<header class="site"><div class="wrap nav">
+  <a href="../../"><img class="logo" src="../../assets/img/logo.png" alt="AML-CS — Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/" aria-current="page">Resources</a></li><li><a class="cta" href="mailto:aml-cs@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
+</div></header>
+<div class="pagehead"><div class="wrap">
+  <div><div class="crumb"><a href="../../">Home</a> / <a href="../">Resources</a> / Guide</div><h1>Run WRF and WRFDA on UN-HPC</h1><p>Install, configure and run the Weather Research and Forecasting model and WRFDA on CentOS 7 / OpenHPC.</p></div>
+  <div></div>
+</div></div><section><div class="wrap"><article class="prose"><p>The following guide show how to install, configure and run the Weather Research and Forecasting Model (WRF) and it's most popular module WRFDA in CentOS 7 - OpenHPC.</p>
+<h2>Setup</h2>
+<p>The <code>setup-WRF.sh</code>, <code>setup-WRFDA-3DVAR.sh</code> and <code>setup-WRFDA-4DVAR.sh</code> scripts will download and install all the dependencies needed to run WRF and WRFDA. Make sure to select the following options during the build process:</p>
+<ul>
+<li>WRF: 34, 1 for gfortran and distributed memory</li>
+<li>WPS: 3</li>
+<li>WRFDA-3DVAR: 34 distributed memory</li>
+</ul>
+<p>When the script are done, the new modules can be loaded:</p>
+<pre><code class="language-bash">module load wrf/4.3 wrfda/4.3-3dvar
+</code></pre>
+<p>On loading the modules, the following scripts will be available for use:</p>
+<ul>
+<li>download-geog-data</li>
+<li>download-grib</li>
+<li>download-obs</li>
+<li>download-prep</li>
+<li>generate-wrfda-be</li>
+<li>run-wps</li>
+<li>run-wrf</li>
+<li>run-wrfda</li>
+<li>run-obsproc</li>
+<li>run-arwpost</li>
+<li>run-arwpost-ensemble</li>
+</ul>
+<p>All of them are self-descriptive, you can find out how to use them by typing <code>--help</code>:</p>
+<pre><code class="language-bash">run-wrf --help
+usage: run_wrf.py [-h] [-i interval] [-g grid_size] [-o output] [-n ntasks]
+                  [--only-wrf] [--only-real] [--srun] [-d]
+                  start_date end_date
+
+Run WRF real.exe or wrf.exe
+
+positional arguments:
+  start_date            First perturbation valid date (YYYY-mm-dd H)
+  end_date              Last perturbation valid date (YYYY-mm-dd H)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i interval, --interval interval
+                        Hours interval, default: 6
+  -g grid_size, --grid-size grid_size
+                        Grid size (meters), default: None
+  -o output, --output output
+                        Output directory
+  -n ntasks, --ntasks ntasks
+                        MPI processors or SLURM tasks
+  --only-wrf            Run only wrf.exe
+  --only-real           Run only real.exe
+  --srun                Run with srun (inside sbatch or salloc)
+  -d, --debug           Debug mode
+</code></pre>
+<h2>Run WRF step by step</h2>
+<ol>
+<li>First create a new SLRUM job allocation</li>
+</ol>
+<pre><code class="language-bash">salloc --job-name &quot;wrf-test&quot; --ntasks=72 -t 24:00:00 -A syseng -p syseng
+</code></pre>
+<ol>
+<li>Load modules</li>
+</ol>
+<pre><code class="language-bash">module load wrf/4.3
+</code></pre>
+<ol>
+<li>Move to your workspace (or create a new one)</li>
+</ol>
+<pre><code class="language-bash">cd /work/syseng/users/$USERNAME/workspace/wrf-test
+</code></pre>
+<ol>
+<li>(if not exists) Download observations</li>
+</ol>
+<pre><code class="language-bash">download-grib &quot;2022-01-01&quot; &quot;2022-01-31&quot;
+</code></pre>
+<ol>
+<li>Run geogrid + ungrid + metgrid (--help or --debug for more info)</li>
+</ol>
+<pre><code class="language-bash">run-wps &quot;2022-01-01 00&quot; &quot;2022-01-31 18&quot; -i 6 -g 1000 --data-dir ./grib-obs
+</code></pre>
+<ol>
+<li>Run real.exe (--help or --debug for more info)</li>
+</ol>
+<pre><code class="language-bash">run-wrf &quot;2022-01-06 00&quot; &quot;2022-01-07 00&quot; -i 6 -n 8 -g 1000 --srun --only-real
+</code></pre>
+<ol>
+<li>Run wrf.exe (--help or --debug for more info)</li>
+</ol>
+<pre><code class="language-bash">run-wrf &quot;2022-01-06 00&quot; &quot;2022-01-07 00&quot; -i 6 -n 64 -g 1000 --srun --only-wrf --output /work/syseng/users/$USERNAME/workspace/wrf-test/wrf_output
+</code></pre>
+<ol>
+<li>(optional) watch real-time logs</li>
+</ol>
+<pre><code class="language-bash">tail -f $WRF_DIR/run/rsl.error.*
+</code></pre>
+<ol>
+<li>(optional) cancel jobs by user</li>
+</ol>
+<pre><code class="language-bash">scancel --user=$USERNAME
+</code></pre>
+<h2>Run WRFDA step by step</h2>
+<ol>
+<li>First create a new SLRUM job allocation</li>
+</ol>
+<pre><code class="language-bash">salloc --job-name &quot;wrfda-test&quot; --ntasks=72 -t 24:00:00 -A syseng -p syseng
+</code></pre>
+<ol>
+<li>Load modules</li>
+</ol>
+<pre><code class="language-bash">module load wrf/4.3 wrfda/4.3
+</code></pre>
+<ol>
+<li>Move to your workspace (or create a new one)</li>
+</ol>
+<pre><code class="language-bash">cd /work/syseng/users/$USERNAME/workspace/wrfda-test
+</code></pre>
+<ol>
+<li>(if not exists) Download observations</li>
+</ol>
+<pre><code class="language-bash">download-grib &quot;2022-01-01&quot; &quot;2022-01-31&quot;
+</code></pre>
+<ol>
+<li>Run geogrid + ungrid + metgrid (--help or --debug for more info)</li>
+</ol>
+<pre><code class="language-bash">run-wps &quot;2022-01-01 00&quot; &quot;2022-01-31 18&quot; -i 6 -g 1000 --data-dir ./grib-obs
+</code></pre>
+<ol>
+<li>Generate first guest wrf.exe (--help or --debug for more info)</li>
+</ol>
+<pre><code class="language-bash">run-wrf &quot;2022-01-06 18&quot; &quot;2022-01-07 00&quot; -i 6 -n 64 -g 1000 --srun --only-wrf --output /work/syseng/users/$USERNAME/workspace/wrfda-test/wrf_output
+</code></pre>
+<ol>
+<li>Generate background error (--help or --debug for more info)</li>
+</ol>
+<pre><code class="language-bash">generate-wrfda-be &quot;2022-01-06 12&quot; &quot;2022-01-10 12&quot; -i 6 -n 64 -g 1000 --data-dir ./ --srun
+</code></pre>
+<ol>
+<li>Download prepbufr observations (ucar.edu)</li>
+</ol>
+<pre><code class="language-bash">download-prep &quot;2022-01-01&quot; &quot;2022-01-31&quot;
+</code></pre>
+<ol>
+<li>Generate ensemble (--help or --debug for more info)</li>
+</ol>
+<pre><code class="language-bash">run-wrfda &quot;2022-01-06 18&quot; &quot;2022-01-07 00&quot; -i 6 -n 64 -g 1000 -o ./wrfda-test --srun --generate-ensemble 1
+</code></pre>
+<ol>
+<li>(optional) watch real-time logs</li>
+</ol>
+<pre><code class="language-bash">tail -f $WRF_DIR/run/rsl.error.*
+</code></pre>
+<h2>ARW-Post</h2>
+<p>This module generate GrADS and/or Vis5D input files from WRF ARW output files that allow to visualize the data in GrADS or Python. For this is necessary to modify the namelist.ARWpost file with the desired parameters, this file is located at <code>${ARW_DIR}</code> directory. Then execute the following command.</p>
+<pre><code class="language-shell">run-arwpost -f [INITIAL DATE] -t [FINAL DATE] [INPUT NAMEFILE] [OUTPUT FILENAME]
+</code></pre>
+<p><strong>Example</strong></p>
+<pre><code class="language-shell">run-arwpost -f &quot;2020-01-01 00&quot; -t &quot;2020-01-02 18&quot; wrf_output data
+</code></pre>
+<p>```=shell
+Configure namelist.ARWpost...</p>
+<p>!!!!!!!!!!!!!!!!
+  ARWpost v3.1
+!!!!!!!!!!!!!!!!</p>
+<p>FOUND the following input files:
+ /home/syseng/omejiaa/workspace/wrf_output</p>
+<p>START PROCESSING DATA</p>
+<p>Processing  time --- 2020-01-01_00:00:00
+   Found the right date - continue</p>
+<p>...</p>
+<p>Processing  time --- 2020-01-02_18:00:00
+   Found the right date - continue</p>
+<p>DONE Processing Data</p>
+<p>CREATING .ctl file</p>
+<p>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!  Successful completion of ARWpost  !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</p>
+<pre><code>Once executed, download the `OUTPUT FILENAME.ctl` and `OUTPUT FILENAME.dat` files, with which you can view the results of the model in the GrADS tool or in Python.
+
+## ARW-Post for ensembles
+
+This module generate GrADS and/or Vis5D input files from WRF ARW output files that allow to visualize the data in GrADS or Python. For this is necessary to modify the namelist.ARWpost file with the desired parameters, this file is located at `${ARW_DIR}` directory. Then execute the following command.
+```shell
+run-arw-ensemble -f [INITIAL DATE] -t [FINAL DATE] -d [FILES DIRECTORY]
+</code></pre>
+<p><code>[INITIAL DATE]</code> and <code>[FINAL DATE]</code> in the format <code>"YYYY-MM-DD HH"</code></p>
+<p><strong>Example</strong></p>
+<pre><code class="language-shell">run-arwpost-ensemble -f &quot;2020-01-01 00&quot; -t &quot;2020-01-02 18&quot; -d wrfda_2021-06-03-22.10.29
+</code></pre>
+<p>```=shell
+Configure namelist.ARWpost...</p>
+<p>!!!!!!!!!!!!!!!!
+  ARWpost v3.1
+!!!!!!!!!!!!!!!!</p>
+<p>FOUND the following input files:
+ /home/syseng/sjdonado/workspace/wrfda_2021-06-03-22.10.29/m1</p>
+<p>START PROCESSING DATA</p>
+<p>Processing  time --- 2020-01-01_00:00:00
+   Found the right date - continue</p>
+<p>Processing  time --- 2020-01-01_01:00:00
+   Found the right date - continue</p>
+<p>Processing  time --- 2020-01-01_02:00:00
+   Found the right date - continue</p>
+<p>Processing  time --- 2020-01-01_03:00:00
+   Found the right date - continue</p>
+<p>...</p>
+<p>Processing  time --- 2020-01-02_18:00:00
+   Found the right date - continue</p>
+<p>DONE Processing Data</p>
+<p>CREATING .ctl file</p>
+<p>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!  Successful completion of ARWpost  !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</p>
+<pre><code>
+Once executed, download the `ensemble-m1.ctl` and `ensemble-m1.dat` files, with which you can view the results of the model in the GrADS tool or in Python.
+
+## GrADS
+
+The Grid Analysis and Display System (GrADS) is an interactive desktop tool that is used for easy access, manipulation, and visualization of earth science data. GrADS has two data models for handling gridded and station data. GrADS supports many data file formats, including binary (stream or sequential), GRIB (version 1 and 2), NetCDF, HDF (version 4 and 5), and BUFR (for station data). GrADS has been implemented worldwide on a variety of commonly used operating systems and is freely distributed over the Internet.
+
+This guide shows a quick way to visualize an ensemble in GrADS, for this we download the `.ctl` and `.dat` files, then we open GrADS and go to the directory where the files were saved.
+``` shell
+cd [DIRECTORY]
+</code></pre>
+<p>Once in the directory we open the file by executing the following command.
+<code>open [filename]</code>
+To visualize the behaviour of the <code>u</code> and <code>v</code> components of the wing and the value of this follow the next commands</p>
+<pre><code>set gxout stream
+set t 1 43
+set lopping on
+d u;v;mag(u,v)
+</code></pre>
+<h2>Related documentation</h2>
+<ul>
+<li>https://www2.mmm.ucar.edu/wrf/users/namelist_best_prac_wps.html</li>
+<li>https://www2.mmm.ucar.edu/wrf/users/wrfda/faq.html#running_GENBE</li>
+<li>https://www2.mmm.ucar.edu/wrf/users/wrfda/OnlineTutorial/Help/gen_be_forecasts.html</li>
+<li>https://www2.mmm.ucar.edu/wrf/users/docs/user_guide_v4/v4.3/</li>
+<li>https://www2.mmm.ucar.edu/wrf/users/docs/user_guide_v4/v4.3/users_guide_chap6.html</li>
+<li>https://www2.mmm.ucar.edu/wrf/users/wrfda/Tutorials/2016_Aug/docs/WRFDA_Observations.pdf</li>
+<li>https://docplayer.net/61091026-Observation-pre-processor-for-wrfda-ncar-mmm.html</li>
+<li>https://slideplayer.com/slide/7011895/</li>
+</ul></article></div></section>
+<footer class="site"><div class="wrap">
+  <div>
+    <a href="../../"><img class="logo-foot" src="../../assets/img/logo.png" alt="AML-CS"></a>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:aml-cs@uninorte.edu.co">aml-cs@uninorte.edu.co</a></p>
+  </div>
+  <div><h5>Lab</h5><ul><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects &amp; funding</a></li><li><a href="../../people/">People</a></li></ul></div>
+  <div><h5>Output</h5><ul><li><a href="../../publications/">Publications</a></li><li><a href="../../talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="../../resources/">HPC guides</a></li><li><a href="../../wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li><li><a href="https://github.com/enino84/TEDA">TEDA</a></li></ul></div>
+  <div class="copy"><span>© 2026 AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
+</div></footer>
+<script src="../../assets/js/site.js"></script>
+</body></html>

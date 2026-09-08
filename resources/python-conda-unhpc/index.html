@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run Python scripts with conda on UN-HPC — AML-CS</title>
+<meta name="description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<meta property="og:title" content="Run Python scripts with conda on UN-HPC — AML-CS"><meta property="og:description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<link rel="icon" href="../../assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+
+</head>
+<body>
+<header class="site"><div class="wrap nav">
+  <a href="../../"><img class="logo" src="../../assets/img/logo.png" alt="AML-CS — Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/" aria-current="page">Resources</a></li><li><a class="cta" href="mailto:aml-cs@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
+</div></header>
+<div class="pagehead"><div class="wrap">
+  <div><div class="crumb"><a href="../../">Home</a> / <a href="../">Resources</a> / Guide</div><h1>Run Python scripts with conda on UN-HPC</h1><p>Virtual environments on the cluster, plus JupyterLab through an SSH tunnel.</p></div>
+  <div></div>
+</div></div><section><div class="wrap"><article class="prose"><p>Running python scripts inside virtual environments using conda, also included is an example for running jupyterlab with an SSH tunnel.</p>
+<h2>Setup miniconda</h2>
+<ul>
+<li>Open a new SSH session and run</li>
+</ul>
+<pre><code class="language-console">module load miniconda
+conda init bash
+</code></pre>
+<ul>
+<li>After restart terminal, you can see:</li>
+</ul>
+<pre><code class="language-console">(base) [user@granado ~]$
+</code></pre>
+<p>The default conda env is called <code>(base)</code>, to list all available envs run: <code>conda env list</code></p>
+<h2>Create a new environment and install dependencies</h2>
+<ul>
+<li>Load <code>miniconda</code> and run:</li>
+</ul>
+<pre><code class="language-console"> conda create --name my_env
+</code></pre>
+<p>This new env will be only available for your account
+- Install dependencies inside the env:</p>
+<pre><code class="language-console">conda install -n my_env numpy 
+</code></pre>
+<h2>Run jupyterlab</h2>
+<ul>
+<li>Open a new SSH session as follows:</li>
+</ul>
+<pre><code class="language-console">ssh -L 8082:127.0.0.1:8082 user@201.150.98.56
+</code></pre>
+<ul>
+<li>Load miniconda</li>
+</ul>
+<pre><code class="language-console">module load miniconda
+</code></pre>
+<ul>
+<li>Activate <code>wrfda</code> env</li>
+</ul>
+<pre><code class="language-console">conda activate wrfda
+</code></pre>
+<ul>
+<li>Start jupyterlab server</li>
+</ul>
+<pre><code class="language-console">jupyter-lab --port 8882
+</code></pre></article></div></section>
+<footer class="site"><div class="wrap">
+  <div>
+    <a href="../../"><img class="logo-foot" src="../../assets/img/logo.png" alt="AML-CS"></a>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:aml-cs@uninorte.edu.co">aml-cs@uninorte.edu.co</a></p>
+  </div>
+  <div><h5>Lab</h5><ul><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects &amp; funding</a></li><li><a href="../../people/">People</a></li></ul></div>
+  <div><h5>Output</h5><ul><li><a href="../../publications/">Publications</a></li><li><a href="../../talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="../../resources/">HPC guides</a></li><li><a href="../../wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li><li><a href="https://github.com/enino84/TEDA">TEDA</a></li></ul></div>
+  <div class="copy"><span>© 2026 AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
+</div></footer>
+<script src="../../assets/js/site.js"></script>
+</body></html>
