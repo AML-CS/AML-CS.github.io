@@ -74,14 +74,15 @@ document.addEventListener('DOMContentLoaded', () => {
 (function () {
   const figs = [...document.querySelectorAll('.strip figure, .feat figure')];
   if (!figs.length) return;
-  const items = figs.map(f => { const img = f.querySelector('img'); const src = f.querySelector('source'); return { src: (src && src.srcset) || img.currentSrc || img.src, alt: img.alt, cap: (f.querySelector('figcaption') || {}).textContent || '' }; });
+  const info = f => { const img = f.querySelector('img'); const src = f.querySelector('source'); return { src: (src && src.srcset) || img.currentSrc || img.src, alt: img.alt, cap: (f.querySelector('figcaption') || {}).textContent || '' }; };
+  let items = [];
   const box = document.createElement('div'); box.className = 'lightbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
   box.innerHTML = '<button class="lb-close" aria-label="Close">×</button><button class="lb-prev" aria-label="Previous">‹</button><figure><img alt=""><figcaption></figcaption></figure><button class="lb-next" aria-label="Next">›</button><div class="lb-count"></div>';
   document.body.appendChild(box);
   const img = box.querySelector('img'), cap = box.querySelector('figcaption'), count = box.querySelector('.lb-count');
   let i = 0, open = false;
   function show(n) { i = (n + items.length) % items.length; img.src = items[i].src; img.alt = items[i].alt; cap.textContent = items[i].cap; count.textContent = (i + 1) + ' / ' + items.length; }
-  function openAt(n) { show(n); box.classList.add('on'); document.body.style.overflow = 'hidden'; open = true; box.querySelector('.lb-close').focus(); }
+  function openAt(n) { const f = figs[n]; const group = f.closest('.strip') ? [...f.closest('.strip').querySelectorAll('figure')] : [f]; items = group.map(info); n = group.indexOf(f); show(n); box.classList.add('on'); document.body.style.overflow = 'hidden'; open = true; box.querySelector('.lb-close').focus(); }
   function close() { box.classList.remove('on'); document.body.style.overflow = ''; open = false; }
   figs.forEach((f, n) => { f.style.cursor = 'zoom-in'; f.tabIndex = 0; f.addEventListener('click', () => openAt(n)); f.addEventListener('keydown', e => { if (e.key === 'Enter') openAt(n); }); });
   box.querySelector('.lb-close').addEventListener('click', close);
@@ -92,3 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let x0 = null; box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   box.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); x0 = null; });
 })();
+
+/* Carousel arrows */
+document.querySelectorAll('.carousel').forEach(c => {
+  const s = c.querySelector('.strip');
+  c.querySelector('.prev').addEventListener('click', () => s.scrollBy({ left: -s.clientWidth * 0.8, behavior: 'smooth' }));
+  c.querySelector('.next').addEventListener('click', () => s.scrollBy({ left: s.clientWidth * 0.8, behavior: 'smooth' }));
+});

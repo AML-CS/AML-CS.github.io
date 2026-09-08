@@ -172,7 +172,7 @@ home = f'''
       <div class="funder">Minciencias · SIGP 68747 / 68790 · with EAFIT and Universidad de Antioquia</div>
       <h3>ExPoR2: Ensemble of models to estimate human exposure to air pollutants in urban areas</h3>
       <p>Part of the ExPoR2 programme on human exposure to atmospheric pollution as a decision-making tool. The lab contributes ensemble-based data assimilation for air-quality models in the Tropical Andes.</p>
-      <div class="row"><span><b>Role</b> Co-investigator</span><span><b>2020–present</b></span><span class="status">Active</span></div>
+      <div class="row"><span><b>Role</b> Co-investigator</span><span><b>Started 2020</b></span><span class="status done">Completed</span></div>
     </div>
   </div>
 </div></section>
@@ -201,6 +201,24 @@ home = f'''
     <figure><img src="assets/img/figures/estimation-of-PM2.jpg" alt="PM2.5 estimation"><figcaption>Estimation of PM2.5 levels via Markovian models.</figcaption></figure>
     <figure><img src="assets/img/figures/levels-of-PM2.5.jpg" alt="PM2.5 levels per interval"><figcaption>Levels of PM2.5 per interval in Barranquilla.</figcaption></figure>
     <figure><img src="assets/img/figures/open-crime-estimation.jpg" alt="Open crime estimation"><figcaption>Open Crime Estimation: probability surface for different regions given a user profile.</figcaption></figure>
+  </div>
+</div></section>
+
+
+<section id="memories"><div class="wrap">
+  <div class="sec-head"><h2>Good memories</h2><p>Workshops, visits and everyday life in the lab over the years. Click a photo to enlarge it.</p></div>
+  <div class="carousel">
+    <button class="car-btn prev" aria-label="Scroll left">‹</button>
+    <div class="strip photos">
+      <figure><img src="assets/img/memories/lab-team.jpg" alt="AML-CS members in the lab at Universidad del Norte"><figcaption>The lab at Universidad del Norte, whiteboard included.</figcaption></figure>
+      <figure><img src="assets/img/memories/workshop-2019-sandu.jpg" alt="At the 1st International Workshop on Data Assimilation for Decision Making, Barranquilla 2019"><figcaption>1st International Workshop on Data Assimilation for Decision Making, Barranquilla, 2019.</figcaption></figure>
+      <figure><img src="assets/img/memories/workshop-2019-speakers.jpg" alt="Speakers of the 1st International Workshop on Data Assimilation for Decision Making"><figcaption>Speakers and organisers of the 2019 workshop.</figcaption></figure>
+      <figure><img class="fit" src="assets/img/memories/workshop-2020-poster.jpg" alt="Poster of the 2nd International Workshop on Data Assimilation for Decision Making, October 2020"><figcaption>2nd International Workshop on Data Assimilation for Decision Making, online, October 2020, with Jeffrey Anderson, Adrian Sandu, Geir Evensen and Arnold Heemink.</figcaption></figure>
+      <figure><img src="assets/img/memories/modemat-ecuador.jpg" alt="Visit to MODEMAT, Ecuador"><figcaption>Visit to the Centro de Modelización Matemática (MODEMAT), Ecuador.</figcaption></figure>
+      <figure><img src="assets/img/memories/lab-lunch.jpg" alt="Lab lunch"><figcaption>Lab lunch.</figcaption></figure>
+      <figure><img class="fit" src="assets/img/memories/wmo-symposium.jpg" alt="At the WMO International Symposium on Data Assimilation"><figcaption>An early one: the WMO International Symposium on Data Assimilation, College Park, USA.</figcaption></figure>
+    </div>
+    <button class="car-btn next" aria-label="Scroll right">›</button>
   </div>
 </div></section>
 
@@ -288,11 +306,11 @@ projects = pagehead('Projects &amp; funding', 'Externally funded research progra
 
 <div class="pdetail" id="minciencias">
   <div>
-    <span class="status">Active · since January 2020</span>
+    <span class="status done">Completed</span>
     <h2 style="margin-top:14px">ExPoR2: Ensemble of models to estimate human exposure to air pollutants</h2>
     <div class="lead">
-      <p>The lab is a co-investigator in the programme <em>Human exposure models to atmospheric pollution in urban areas as a decision-making tool</em> (Exposure to Pollutants Regional Research, ExPoR2), funded by Minciencias and led by Universidad EAFIT with Universidad de Antioquia and Universidad del Norte as co-executing institutions.</p>
-      <p>Within the programme, the project <em>Ensemble of models to estimate human exposure to atmospheric pollutants</em> develops ensemble-based data assimilation for air-quality models in the Tropical Andes, in collaboration with the Mathematical Modelling group led by Prof. Olga Lucía Quintero Montoya at EAFIT.</p>
+      <p>The lab was a co-investigator in the programme <em>Human exposure models to atmospheric pollution in urban areas as a decision-making tool</em> (Exposure to Pollutants Regional Research, ExPoR2), funded by Minciencias and led by Universidad EAFIT with Universidad de Antioquia and Universidad del Norte as co-executing institutions.</p>
+      <p>Within the programme, the project <em>Ensemble of models to estimate human exposure to atmospheric pollutants</em> developed ensemble-based data assimilation for air-quality models in the Tropical Andes, in collaboration with the Mathematical Modelling group led by Prof. Olga Lucía Quintero Montoya at EAFIT.</p>
     </div>
     <ul class="outputs">
       <li><span>Journal paper</span><a href="https://doi.org/10.1007/s10596-021-10035-4">An efficient ensemble Kalman Filter implementation via shrinkage covariance matrix estimation: exploiting prior knowledge, Computational Geosciences (2021)</a></li>
@@ -300,7 +318,7 @@ projects = pagehead('Projects &amp; funding', 'Externally funded research progra
       <li><span>Event</span><a href="../talks/#workshop">3rd International Workshop on Data Assimilation</a>, organised as part of the programme</li>
     </ul>
   </div>
-  {facts([('Funder','Ministerio de Ciencia, Tecnología e Innovación (Minciencias)'),('Programme','ExPoR2 · SIGP 68747 · COP 1,635,189,082'),('Project','SIGP 68790 · COP 389,949,080'),('Contract','No. 936-2019, 30 December 2019'),('Type','Research and development · external funding'),('Start','January 2020 · ongoing'),('Lead institution','Universidad EAFIT (Medellín)'),('Co-executing','Universidad de Antioquia · Universidad del Norte'),('Lab role','Co-investigator')])}
+  {facts([('Funder','Ministerio de Ciencia, Tecnología e Innovación (Minciencias)'),('Programme','ExPoR2 · SIGP 68747 · COP 1,635,189,082'),('Project','SIGP 68790 · COP 389,949,080'),('Contract','No. 936-2019, 30 December 2019'),('Type','Research and development · external funding'),('Period','Started January 2020 · completed'),('Lead institution','Universidad EAFIT (Medellín)'),('Co-executing','Universidad de Antioquia · Universidad del Norte'),('Lab role','Co-investigator')])}
 </div>
 
 

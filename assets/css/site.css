@@ -166,6 +166,15 @@ section.dark{background:var(--navy);color:#fff}
 .strip img.fit{object-fit:contain}
 .strip figcaption{font-family:var(--display);font-size:14px;color:var(--ink);margin-top:10px;line-height:1.4}
 
+/* carousel arrows */
+.carousel{position:relative}
+.car-btn{position:absolute;top:calc(50% - 40px);transform:translateY(-50%);z-index:2;width:44px;height:44px;border-radius:50%;border:1px solid var(--rule);background:#fff;color:var(--navy);font-size:28px;line-height:1;cursor:pointer;box-shadow:0 8px 24px -10px rgba(15,43,76,.4);display:flex;align-items:center;justify-content:center;padding:0 0 3px}
+.car-btn:hover{background:var(--sea)}
+.car-btn.prev{left:-22px}.car-btn.next{right:-22px}
+.strip.photos{grid-auto-columns:minmax(340px,42%)}
+.strip.photos img{aspect-ratio:3/2}
+@media (max-width:900px){.car-btn.prev{left:-6px}.car-btn.next{right:-6px}.strip.photos{grid-auto-columns:minmax(280px,85%)}}
+
 /* people */
 .director{display:grid;grid-template-columns:220px minmax(0,1fr);gap:44px;align-items:center;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.14);margin-bottom:48px}
 .director img{width:220px;height:220px;object-fit:cover;object-position:top;border-radius:50%;border:5px solid var(--sky);box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}
