@@ -12,13 +12,13 @@ No necesita Hugo ni Jekyll: es HTML, CSS y JS puros, listo para GitHub Pages.
 
 ## Estructura
 
-- `index.html` — portada
-- `projects/` — proyectos y financiadores (Banco de la República, Minciencias)
-- `publications/` — lista completa con filtros
+- `index.html`: portada
+- `projects/`: proyectos y financiadores (Banco de la República, Minciencias)
+- `publications/`: lista completa con filtros
 - `people/`, `talks/`, `resources/`, `wrf-baq-0.5km/`
-- `assets/css/site.css` — todo el diseño
-- `assets/js/site.js` — menú móvil, animación del hero, filtros de publicaciones
-- `assets/img/` — logo, fotos y figuras
+- `assets/css/site.css`: todo el diseño
+- `assets/js/site.js`: menú móvil, animación del hero, filtros de publicaciones
+- `assets/img/`: logo, fotos y figuras
 
 ## Cómo editar
 

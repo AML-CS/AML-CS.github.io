@@ -6,6 +6,8 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--navy);font-family:var(--serif);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased}
+p,.area p,.proj p,.feat p,.director p,.pdetail .lead,.event p,.guide p,.pagehead p,.sec-head p,.hero p,.prose li{text-align:justify;hyphens:auto}
+.sec-head p,.pagehead p{text-align:left}
 a{color:var(--deep);text-decoration:none}
 a:hover{text-decoration:underline;text-underline-offset:3px}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:2px}
@@ -161,6 +163,7 @@ section.dark{background:var(--navy);color:#fff}
 .strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(300px,1fr);gap:20px;overflow-x:auto;padding-bottom:16px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--rule) transparent}
 .strip figure{margin:0;scroll-snap-align:start}
 .strip img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;background:#fff;border:1px solid var(--rule)}
+.strip img.fit{object-fit:contain}
 .strip figcaption{font-family:var(--display);font-size:14px;color:var(--ink);margin-top:10px;line-height:1.4}
 
 /* people */

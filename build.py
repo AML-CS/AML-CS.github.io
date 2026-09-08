@@ -89,15 +89,15 @@ def shell(title, body, current='', desc='Applied Math and Computer Science Lab a
 </head>
 <body>
 <header class="site"><div class="wrap nav">
-  <a href="{rel}"><img class="logo" src="{rel}assets/img/logo.png" alt="AML-CS — Applied Math and Computer Science Lab"></a>
-  <nav aria-label="Main"><ul>{items}<li><a class="cta" href="mailto:aml-cs@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <a href="{rel}"><img class="logo" src="{rel}assets/img/logo.png" alt="AML-CS: Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul>{items}<li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
   <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
 </div></header>
 {body}
 <footer class="site"><div class="wrap">
   <div>
     <a href="{rel}"><img class="logo-foot" src="{rel}assets/img/logo.png" alt="AML-CS"></a>
-    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:aml-cs@uninorte.edu.co">aml-cs@uninorte.edu.co</a></p>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:enino@uninorte.edu.co">enino@uninorte.edu.co</a></p>
   </div>
   <div><h5>Lab</h5><ul><li><a href="{rel}#research">Research</a></li><li><a href="{rel}projects/">Projects &amp; funding</a></li><li><a href="{rel}people/">People</a></li></ul></div>
   <div><h5>Output</h5><ul><li><a href="{rel}publications/">Publications</a></li><li><a href="{rel}talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
@@ -119,7 +119,7 @@ def write(path, content):
 
 # ---------------------------------------------------------------- HOME
 recent = [p for p in PUBS if p[0] >= 2024][:6]
-recent_html = ''.join(f'<li><span class="year">{y}</span><div><div class="t">{"<a href=\"%s\">%s</a>" % (u, t) if u else t}</div><div class="v">{bold_lab(a)} — {v}</div></div>{f"<a class=\"l\" href=\"{u}\">Article</a>" if u else ""}</li>' for y,k,t,a,v,u in recent)
+recent_html = ''.join(f'<li><span class="year">{y}</span><div><div class="t">{"<a href=\"%s\">%s</a>" % (u, t) if u else t}</div><div class="v">{bold_lab(a)} · {v}</div></div>{f"<a class=\"l\" href=\"{u}\">Article</a>" if u else ""}</li>' for y,k,t,a,v,u in recent)
 
 home = f'''
 <section class="hero">
@@ -127,7 +127,7 @@ home = f'''
   <div class="wrap">
     <div>
       <h1>We teach models to listen to data.</h1>
-      <p>The Applied Math and Computer Science Lab in Barranquilla, Colombia, builds data assimilation, inverse-problem and optimization methods that turn noisy observations into better forecasts — for weather, air quality and the city around us.</p>
+      <p>The Applied Math and Computer Science Lab in Barranquilla, Colombia, builds data assimilation, inverse-problem and optimization methods that turn noisy observations into better forecasts for weather, air quality and the city around us.</p>
       <div class="actions"><a class="btn primary" href="#research">Explore our research</a><a class="btn ghost" href="publications/">Read the papers</a></div>
     </div><div></div>
     <div class="legend"><span><i style="background:#F0A92B"></i>ensemble members</span><span><i style="background:#fff"></i>observation</span><span><i style="background:#4BA2DE"></i>analysis</span></div>
@@ -141,7 +141,7 @@ home = f'''
 </div></div>
 <div class="sponsors"><div class="wrap">
   <span>Research supported by</span>
-  <a class="sponsor" href="projects/#minciencias"><img src="assets/img/sponsors/minciencias.png" alt="Minciencias — Ministerio de Ciencia, Tecnología e Innovación"></a>
+  <a class="sponsor" href="projects/#minciencias"><img src="assets/img/sponsors/minciencias.png" alt="Minciencias: Ministerio de Ciencia, Tecnología e Innovación"></a>
   <a class="sponsor" href="projects/#banrep"><img src="assets/img/sponsors/banco-republica.png" alt="Banco de la República"><span>Banco de la República<small>FPIT research fund</small></span></a>
   <a class="sponsor" href="https://www.uninorte.edu.co/"><img src="assets/img/sponsors/uninorte-logo.jpg" alt="Universidad del Norte"></a>
 </div></div>
@@ -149,7 +149,7 @@ home = f'''
 <section id="research"><div class="wrap">
   <div class="sec-head"><h2>What we work on</h2><p>A space that brings together people from different fields of science, motivated to solve real problems through scientific computing, mathematics and statistics.</p></div>
   <div class="areas">
-    <div class="area"><h3>Data assimilation</h3><p>Ensemble Kalman filters, 4D-Var and hybrid MCMC schemes that fold observations into numerical models — including non-Gaussian and adjoint-free formulations.</p><span>Core line</span></div>
+    <div class="area"><h3>Data assimilation</h3><p>Ensemble Kalman filters, 4D-Var and hybrid MCMC schemes that fold observations into numerical models, including non-Gaussian and adjoint-free formulations.</p><span>Core line</span></div>
     <div class="area"><h3>Inverse problems &amp; parameter estimation</h3><p>Recovering what we cannot measure directly from what we can, with shrinkage covariance estimators and modified Cholesky decompositions.</p><span>Core line</span></div>
     <div class="area"><h3>Numerical optimization</h3><p>Trust-region, line-search and random-direction methods for large, expensive objective functions.</p><span>Methods</span></div>
     <div class="area"><h3>Combinatorial optimization</h3><p>Tabu search, simulated annealing and nature-inspired algorithms applied to localization and scheduling problems.</p><span>Methods</span></div>
@@ -170,7 +170,7 @@ home = f'''
     </div>
     <div class="proj">
       <div class="funder">Minciencias · SIGP 68747 / 68790 · with EAFIT and Universidad de Antioquia</div>
-      <h3>ExPoR2 — Ensemble of models to estimate human exposure to air pollutants in urban areas</h3>
+      <h3>ExPoR2: Ensemble of models to estimate human exposure to air pollutants in urban areas</h3>
       <p>Part of the ExPoR2 programme on human exposure to atmospheric pollution as a decision-making tool. The lab contributes ensemble-based data assimilation for air-quality models in the Tropical Andes.</p>
       <div class="row"><span><b>Role</b> Co-investigator</span><span><b>2020–present</b></span><span class="status">Active</span></div>
     </div>
@@ -196,7 +196,7 @@ home = f'''
   <div class="sec-head"><h2>From the lab</h2><p>Figures from recent projects. Scroll sideways.</p></div>
   <div class="strip">
     <figure><img src="assets/img/figures/iota-simulation.gif" alt="WRF simulations of hurricane Iota"><figcaption>WRF simulations of hurricane Iota.</figcaption></figure>
-    <figure><img src="assets/img/figures/worldwide-temperatures.jpg" alt="Worldwide surface temperatures"><figcaption>Worldwide temperature levels at surface.</figcaption></figure>
+    <figure><picture><source srcset="assets/img/figures/global-wind-da.webp" type="image/webp"><img class="fit" src="assets/img/figures/global-wind-da.jpg" alt="Global wind field at 925 mb: reference, background and analyses from several ensemble filters"></picture><figcaption>Global wind at 925 mb: reference, background and analyses from several ensemble-based filters.</figcaption></figure>
     <figure><img src="assets/img/figures/urban-analytics.jpg" alt="Car accidents in Barranquilla"><figcaption>Urban analytics: car accidents in Barranquilla.</figcaption></figure>
     <figure><img src="assets/img/figures/estimation-of-PM2.jpg" alt="PM2.5 estimation"><figcaption>Estimation of PM2.5 levels via Markovian models.</figcaption></figure>
     <figure><img src="assets/img/figures/levels-of-PM2.5.jpg" alt="PM2.5 levels per interval"><figcaption>Levels of PM2.5 per interval in Barranquilla.</figcaption></figure>
@@ -227,7 +227,7 @@ home = f'''
   </ul>
 </div></section>
 '''
-write('index.html', shell('AML-CS — Applied Math and Computer Science Lab · Universidad del Norte', home, 'Home'))
+write('index.html', shell('AML-CS: Applied Math and Computer Science Lab · Universidad del Norte', home, 'Home'))
 
 # ---------------------------------------------------------------- PUBLICATIONS
 cnt = Counter(p[1] for p in PUBS); years = sorted({p[0] for p in PUBS}, reverse=True)
@@ -251,17 +251,17 @@ pubs_page = pagehead('Publications', 'Journal articles, conference papers and so
 <div class="empty" id="empty">No publications match. Clear the filters to see everything.</div>
 <p style="margin-top:48px;font-family:var(--display);font-size:14px;color:var(--muted)">Complete record: <a href="https://orcid.org/0000-0001-7784-8163">ORCID</a> · <a href="https://scholar.google.com/citations?user=IE8dAAgAAAAJ&hl=en">Google Scholar</a> · <a href="https://www.scopus.com/authid/detail.uri?authorId=36603283600">Scopus</a></p>
 </main>'''
-write('publications/index.html', shell('Publications — AML-CS', pubs_page, 'Publications', depth=1))
+write('publications/index.html', shell('Publications: AML-CS', pubs_page, 'Publications', depth=1))
 
 # ---------------------------------------------------------------- PROJECTS
 def facts(rows): return '<div class="facts"><dl>' + ''.join(f'<div><dt>{k}</dt><dd>{v}</dd></div>' for k,v in rows) + '</dl></div>'
 projects = pagehead('Projects &amp; funding', 'Externally funded research programmes the lab leads or co-leads, and the institutions that make them possible.', 'Projects',
-  '<div><b>2</b>Funded projects</div><div><b>1</b>Proposal under review</div><div><b>3</b>Partner institutions</div>') + f'''
+  '<div><b>2</b>Funded projects</div><div><b>3</b>Partner institutions</div><div><b>2</b>Funders</div>') + f'''
 <section style="padding:64px 0 0"><div class="wrap">
   <div class="sponsors box">
     <span>Funders and partners</span>
     <a class="sponsor" href="#banrep"><img src="../assets/img/sponsors/banco-republica.png" alt="Banco de la República"><span>Banco de la República<small>Fondo para la Promoción de la Investigación y la Tecnología</small></span></a>
-    <a class="sponsor" href="#minciencias"><img src="../assets/img/sponsors/minciencias.png" alt="Minciencias — Ministerio de Ciencia, Tecnología e Innovación"></a>
+    <a class="sponsor" href="#minciencias"><img src="../assets/img/sponsors/minciencias.png" alt="Minciencias: Ministerio de Ciencia, Tecnología e Innovación"></a>
     <a class="sponsor" href="https://www.eafit.edu.co/"><img src="../assets/img/sponsors/eafit-logo.jpg" alt="Universidad EAFIT"></a>
     <a class="sponsor" href="https://www.uninorte.edu.co/"><img src="../assets/img/sponsors/uninorte-logo.jpg" alt="Universidad del Norte"></a>
   </div>
@@ -279,43 +279,33 @@ projects = pagehead('Projects &amp; funding', 'Externally funded research progra
       <p>The methods were released as open-source software: the TEDA framework (SoftwareX, 2025) and the DownscalingMethods repository.</p>
     </div>
     <ul class="outputs">
-      <li><span>Software paper</span><a href="https://doi.org/10.1016/j.softx.2025.102297">TEDA: A lightweight Python framework for educational data assimilation — SoftwareX 31, 102297 (2025)</a></li>
+      <li><span>Software paper</span><a href="https://doi.org/10.1016/j.softx.2025.102297">TEDA: A lightweight Python framework for educational data assimilation, SoftwareX 31, 102297 (2025)</a></li>
       <li><span>Code</span><a href="https://github.com/enino84/TEDA">github.com/enino84/TEDA</a> · DownscalingMethods repository</li>
     </ul>
   </div>
-  {facts([('Funder','Banco de la República — FPIT'),('Project','No. 5.056 · FPIT filing 184'),('Approved','Board of Directors, 5 August 2024'),('Funding','COP 18,000,000 of a COP 32,760,000 total budget'),('Duration','12 months · closed successfully July 2025'),('Principal investigator','Elias D. Nino-Ruiz'),('Co-investigator','H. R. Peñaranda Bello'),('Institution','Universidad del Norte')])}
+  {facts([('Funder','Banco de la República, FPIT'),('Project','No. 5.056 · FPIT filing 184'),('Approved','Board of Directors, 5 August 2024'),('Funding','COP 18,000,000 of a COP 32,760,000 total budget'),('Duration','12 months · closed successfully July 2025'),('Principal investigator','Elias D. Nino-Ruiz'),('Co-investigator','H. R. Peñaranda Bello'),('Institution','Universidad del Norte')])}
 </div>
 
 <div class="pdetail" id="minciencias">
   <div>
     <span class="status">Active · since January 2020</span>
-    <h2 style="margin-top:14px">ExPoR2 — Ensemble of models to estimate human exposure to air pollutants</h2>
+    <h2 style="margin-top:14px">ExPoR2: Ensemble of models to estimate human exposure to air pollutants</h2>
     <div class="lead">
       <p>The lab is a co-investigator in the programme <em>Human exposure models to atmospheric pollution in urban areas as a decision-making tool</em> (Exposure to Pollutants Regional Research, ExPoR2), funded by Minciencias and led by Universidad EAFIT with Universidad de Antioquia and Universidad del Norte as co-executing institutions.</p>
       <p>Within the programme, the project <em>Ensemble of models to estimate human exposure to atmospheric pollutants</em> develops ensemble-based data assimilation for air-quality models in the Tropical Andes, in collaboration with the Mathematical Modelling group led by Prof. Olga Lucía Quintero Montoya at EAFIT.</p>
     </div>
     <ul class="outputs">
-      <li><span>Journal paper</span><a href="https://doi.org/10.1007/s10596-021-10035-4">An efficient ensemble Kalman Filter implementation via shrinkage covariance matrix estimation: exploiting prior knowledge — Computational Geosciences (2021)</a></li>
-      <li><span>Journal paper</span><a href="https://doi.org/10.3390/s20030877">A Maximum Likelihood Ensemble Filter via a Modified Cholesky Decomposition for Non-Gaussian Data Assimilation — Sensors (2020)</a></li>
+      <li><span>Journal paper</span><a href="https://doi.org/10.1007/s10596-021-10035-4">An efficient ensemble Kalman Filter implementation via shrinkage covariance matrix estimation: exploiting prior knowledge, Computational Geosciences (2021)</a></li>
+      <li><span>Journal paper</span><a href="https://doi.org/10.3390/s20030877">A Maximum Likelihood Ensemble Filter via a Modified Cholesky Decomposition for Non-Gaussian Data Assimilation, Sensors (2020)</a></li>
       <li><span>Event</span><a href="../talks/#workshop">3rd International Workshop on Data Assimilation</a>, organised as part of the programme</li>
     </ul>
   </div>
   {facts([('Funder','Ministerio de Ciencia, Tecnología e Innovación (Minciencias)'),('Programme','ExPoR2 · SIGP 68747 · COP 1,635,189,082'),('Project','SIGP 68790 · COP 389,949,080'),('Contract','No. 936-2019, 30 December 2019'),('Type','Research and development · external funding'),('Start','January 2020 · ongoing'),('Lead institution','Universidad EAFIT (Medellín)'),('Co-executing','Universidad de Antioquia · Universidad del Norte'),('Lab role','Co-investigator')])}
 </div>
 
-<div class="pdetail" id="next">
-  <div>
-    <span class="status prop">Proposal · submitted 2026</span>
-    <h2 style="margin-top:14px">Dynamic downscaling at sub-kilometre resolution with WRF and U-Net</h2>
-    <div class="lead">
-      <p>A continuation of the FPIT project, prepared for the Banco de la República's 2026 call. It combines the WRF numerical model with U-Net convolutional networks to bring the Atlántico atmospheric dataset down to sub-kilometre resolution through dynamic rather than purely statistical downscaling.</p>
-    </div>
-  </div>
-  {facts([('Funder','Banco de la República — FPIT (applied)'),('Status','Under review'),('Builds on','Project 5.056 · TEDA'),('Principal investigator','Elias D. Nino-Ruiz')])}
-</div>
 
 </div></section>'''
-write('projects/index.html', shell('Projects & funding — AML-CS', projects, 'Projects', depth=1))
+write('projects/index.html', shell('Projects & funding: AML-CS', projects, 'Projects', depth=1))
 
 # ---------------------------------------------------------------- PEOPLE
 def person(img, name, role, link=''):
@@ -330,20 +320,22 @@ people = pagehead('People', 'The director, current students and everyone who has
       <h3>Elias D. Nino-Ruiz, Ph.D.</h3>
       <div class="role">Director · Professor, Department of Computer Science and Engineering, Universidad del Norte</div>
       <p>Founded the lab in April 2017. Works on ensemble-based data assimilation, covariance matrix estimation and numerical optimization for atmospheric models.</p>
-      <div class="profiles"><a href="https://enino84.github.io/">Personal site</a><a href="https://orcid.org/0000-0001-7784-8163">ORCID</a><a href="https://scholar.google.com/citations?user=IE8dAAgAAAAJ&hl=en">Google Scholar</a><a href="mailto:aml-cs@uninorte.edu.co">Email</a></div>
+      <div class="profiles"><a href="https://enino84.github.io/">Personal site</a><a href="https://orcid.org/0000-0001-7784-8163">ORCID</a><a href="https://scholar.google.com/citations?user=IE8dAAgAAAAJ&hl=en">Google Scholar</a><a href="mailto:enino@uninorte.edu.co">Email</a></div>
     </div>
   </div>
 </div></section>
 <section><div class="wrap">
-  <div class="sec-head"><h2>Current students</h2><p>Master's students working with the group.</p></div>
+  <div class="sec-head"><h2>Current students</h2><p>Students working with the group.</p></div>
   <div class="grid-people">
-    {person('andres-movilla.jpg','Andres Felipe Movilla Obregon','M.Sc. in Computer Science','https://andremov.github.io')}
-    {person('alejandro-manotas.jpg','Alejandro Manotas','M.Sc. in Computer Science')}
+    {person('','Hernaldo R. Peñaranda Bello','Ph.D. student · Atmospheric data downscaling via data assimilation and machine learning · Co-investigator, Banco de la República FPIT project')}
   </div>
 </div></section>
 <section class="tint"><div class="wrap">
   <div class="sec-head"><h2>Alumni</h2><p>Former students of the lab and the work they did with us.</p></div>
   <div class="grid-people">
+    {person('andres-movilla.jpg','Andres Felipe Movilla Obregon','M.Sc. in Computer Science','https://andremov.github.io')}
+    {person('','Giuliano','M.Sc. in Computer Science')}
+    {person('alejandro-manotas.jpg','Alejandro Manotas','M.Sc. in Computer Science')}
     {person('omar-mejia.jpg','Omar Angel Mejia Suarez','M.Sc. in Computer Science · Data assimilation for air-quality estimation','https://sites.google.com/view/omarmejiasuarez/inicio')}
     {person('sebastian-ariza.jpg','Sebastian Ariza','M.Sc. in Computer Science')}
     {person('juan-calabria.jpg','Juan C. Calabria Sarmiento','M.Sc. in Computer Science · 4D-Var for wind energy estimation')}
@@ -356,7 +348,7 @@ people = pagehead('People', 'The director, current students and everyone who has
     {person('juan-rodriguez.jpg','Juan Rodriguez','M.Sc. in Computer Science')}
   </div>
 </div></section>'''
-write('people/index.html', shell('People — AML-CS', people, 'People', depth=1))
+write('people/index.html', shell('People: AML-CS', people, 'People', depth=1))
 
 # ---------------------------------------------------------------- TALKS & EVENTS
 series = [
@@ -404,7 +396,7 @@ talks = pagehead('Talks &amp; events', 'Recorded talks by the lab and its guests
     <div>{ph}</div>
   </div>
 </div></section>'''
-write('talks/index.html', shell('Talks & events — AML-CS', talks, 'Talks & events', depth=1))
+write('talks/index.html', shell('Talks & events: AML-CS', talks, 'Talks & events', depth=1))
 
 # ---------------------------------------------------------------- RESOURCES (guides from markdown)
 GUIDES = [
@@ -432,18 +424,18 @@ res = pagehead('Resources', 'Guides for the Universidad del Norte HPC cluster, t
     <a class="guide" href="https://doi.org/10.1016/j.softx.2025.102125"><h3>Precision matrices via modified Cholesky</h3><p>Statistical package for computing precision covariance matrices. SoftwareX 2025.</p><span>SoftwareX</span></a>
   </div>
 </div></section>'''
-write('resources/index.html', shell('Resources — AML-CS', res, 'Resources', depth=1))
+write('resources/index.html', shell('Resources: AML-CS', res, 'Resources', depth=1))
 for slug, path, t, d, when in GUIDES:
     body = pagehead(t, d, f'<a href="../">Resources</a> / Guide') + f'<section><div class="wrap"><article class="prose">{md_body(path)}</article></div></section>'
     body = body.replace('<div class="crumb"><a href="../">Home</a>', '<div class="crumb"><a href="../../">Home</a>')
-    write(f'resources/{slug}/index.html', shell(f'{t} — AML-CS', body, 'Resources', depth=2))
+    write(f'resources/{slug}/index.html', shell(f'{t}: AML-CS', body, 'Resources', depth=2))
 
 # ---------------------------------------------------------------- WRF-BAQ
 wrf = open(os.path.join(SRC, 'wrf-baq-0.5km/index.md')).read()
 wrf = re.sub(r'^---.*?---\s*', '', wrf, flags=re.S)
 wrf_html = markdown.markdown(wrf, extensions=['fenced_code', 'tables'])
 wrf_body = pagehead('WRF-BAQ 0.5 km forecast', 'Barranquilla forecasts at 0.5 km grid spacing, updated every 3 hours on the Granado HPC cluster at Universidad del Norte.', 'WRF-BAQ 0.5 km') + f'<section><div class="wrap"><article class="prose" style="max-width:none">{wrf_html}</article></div></section>'
-write('wrf-baq-0.5km/index.html', shell('WRF-BAQ 0.5 km forecast — AML-CS', wrf_body, 'Resources', depth=1,
+write('wrf-baq-0.5km/index.html', shell('WRF-BAQ 0.5 km forecast: AML-CS', wrf_body, 'Resources', depth=1,
   extra_head='<link rel="stylesheet" href="../assets/css/wrf-baq.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script><script src="../assets/js/wrf-baq.js"></script><script>document.addEventListener("DOMContentLoaded",()=>{if(window.initWRFBaqApp)window.initWRFBaqApp()});</script>'))
 
 open(os.path.join(OUT, '.nojekyll'), 'w').write('')
@@ -461,13 +453,13 @@ No necesita Hugo ni Jekyll: es HTML, CSS y JS puros, listo para GitHub Pages.
 
 ## Estructura
 
-- `index.html` — portada
-- `projects/` — proyectos y financiadores (Banco de la República, Minciencias)
-- `publications/` — lista completa con filtros
+- `index.html`: portada
+- `projects/`: proyectos y financiadores (Banco de la República, Minciencias)
+- `publications/`: lista completa con filtros
 - `people/`, `talks/`, `resources/`, `wrf-baq-0.5km/`
-- `assets/css/site.css` — todo el diseño
-- `assets/js/site.js` — menú móvil, animación del hero, filtros de publicaciones
-- `assets/img/` — logo, fotos y figuras
+- `assets/css/site.css`: todo el diseño
+- `assets/js/site.js`: menú móvil, animación del hero, filtros de publicaciones
+- `assets/img/`: logo, fotos y figuras
 
 ## Cómo editar
 
