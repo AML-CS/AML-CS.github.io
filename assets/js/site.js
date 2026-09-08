@@ -69,3 +69,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('empty').classList.toggle('show', !any);
   }
 })();
+
+/* Lightbox for gallery figures: click to enlarge, arrows or keys to move */
+(function () {
+  const figs = [...document.querySelectorAll('.strip figure, .feat figure')];
+  if (!figs.length) return;
+  const items = figs.map(f => { const img = f.querySelector('img'); const src = f.querySelector('source'); return { src: (src && src.srcset) || img.currentSrc || img.src, alt: img.alt, cap: (f.querySelector('figcaption') || {}).textContent || '' }; });
+  const box = document.createElement('div'); box.className = 'lightbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+  box.innerHTML = '<button class="lb-close" aria-label="Close">×</button><button class="lb-prev" aria-label="Previous">‹</button><figure><img alt=""><figcaption></figcaption></figure><button class="lb-next" aria-label="Next">›</button><div class="lb-count"></div>';
+  document.body.appendChild(box);
+  const img = box.querySelector('img'), cap = box.querySelector('figcaption'), count = box.querySelector('.lb-count');
+  let i = 0, open = false;
+  function show(n) { i = (n + items.length) % items.length; img.src = items[i].src; img.alt = items[i].alt; cap.textContent = items[i].cap; count.textContent = (i + 1) + ' / ' + items.length; }
+  function openAt(n) { show(n); box.classList.add('on'); document.body.style.overflow = 'hidden'; open = true; box.querySelector('.lb-close').focus(); }
+  function close() { box.classList.remove('on'); document.body.style.overflow = ''; open = false; }
+  figs.forEach((f, n) => { f.style.cursor = 'zoom-in'; f.tabIndex = 0; f.addEventListener('click', () => openAt(n)); f.addEventListener('keydown', e => { if (e.key === 'Enter') openAt(n); }); });
+  box.querySelector('.lb-close').addEventListener('click', close);
+  box.querySelector('.lb-prev').addEventListener('click', () => show(i - 1));
+  box.querySelector('.lb-next').addEventListener('click', () => show(i + 1));
+  box.addEventListener('click', e => { if (e.target === box) close(); });
+  document.addEventListener('keydown', e => { if (!open) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') show(i + 1); if (e.key === 'ArrowLeft') show(i - 1); });
+  let x0 = null; box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  box.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); x0 = null; });
+})();

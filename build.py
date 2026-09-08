@@ -327,14 +327,14 @@ people = pagehead('People', 'The director, current students and everyone who has
 <section><div class="wrap">
   <div class="sec-head"><h2>Current students</h2><p>Students working with the group.</p></div>
   <div class="grid-people">
-    {person('','Hernaldo R. Peñaranda Bello','Ph.D. student · Atmospheric data downscaling via data assimilation and machine learning · Co-investigator, Banco de la República FPIT project')}
+    {person('hernaldo-penaranda.jpg','Hernaldo R. Peñaranda Bello','Ph.D. student · Atmospheric data downscaling via data assimilation and machine learning · Co-investigator, Banco de la República FPIT project')}
   </div>
 </div></section>
 <section class="tint"><div class="wrap">
   <div class="sec-head"><h2>Alumni</h2><p>Former students of the lab and the work they did with us.</p></div>
   <div class="grid-people">
     {person('andres-movilla.jpg','Andres Felipe Movilla Obregon','M.Sc. in Computer Science','https://andremov.github.io')}
-    {person('','Giuliano','M.Sc. in Computer Science')}
+    {person('giuliano.jpg','Giuliano','M.Sc. in Computer Science')}
     {person('alejandro-manotas.jpg','Alejandro Manotas','M.Sc. in Computer Science')}
     {person('omar-mejia.jpg','Omar Angel Mejia Suarez','M.Sc. in Computer Science · Data assimilation for air-quality estimation','https://sites.google.com/view/omarmejiasuarez/inicio')}
     {person('sebastian-ariza.jpg','Sebastian Ariza','M.Sc. in Computer Science')}
