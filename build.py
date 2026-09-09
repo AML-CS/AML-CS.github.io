@@ -68,7 +68,7 @@ PUBS = [
  (2014,'conf','Variational Data Assimilation Based on Derivative-Free Optimization','Nino, E. D., Sandu, A.','International Conference on Dynamic Data-Driven Environmental Systems Science, pp. 239–250 · Springer',''),
 ]
 
-NAV = [('Home','/'),('Research','/#research'),('Projects','/projects/'),('Publications','/publications/'),('People','/people/'),('Talks & events','/talks/'),('Resources','/resources/')]
+NAV = [('Home','/'),('Research','/#research'),('Projects','/projects/'),('Publications','/publications/'),('Software','/software/'),('People','/people/'),('Talks & events','/talks/'),('Resources','/resources/')]
 
 def shell(title, body, current='', desc='Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.', depth=0, extra_head=''):
     rel = '../' * depth if depth else './'
@@ -101,7 +101,7 @@ def shell(title, body, current='', desc='Applied Math and Computer Science Lab a
   </div>
   <div><h5>Lab</h5><ul><li><a href="{rel}#research">Research</a></li><li><a href="{rel}projects/">Projects &amp; funding</a></li><li><a href="{rel}people/">People</a></li></ul></div>
   <div><h5>Output</h5><ul><li><a href="{rel}publications/">Publications</a></li><li><a href="{rel}talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
-  <div><h5>Tools</h5><ul><li><a href="{rel}resources/">HPC guides</a></li><li><a href="{rel}wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li><li><a href="https://github.com/enino84/TEDA">TEDA</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="{rel}software/">Software</a></li><li><a href="{rel}resources/">HPC guides</a></li><li><a href="{rel}wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li></ul></div>
   <div class="copy"><span>© {YEAR} AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
 </div></footer>
 <script src="{rel}assets/js/site.js"></script>
@@ -136,7 +136,7 @@ home = f'''
 <div class="stats"><div class="wrap">
   <div><b>2017</b>Founded at Universidad del Norte</div>
   <div><b>{len(PUBS)}</b>Journal &amp; conference papers</div>
-  <div><b>4</b>Open-source software packages</div>
+  <div><b>4</b><a href="software/" style="color:#9FC2E0">Open-source software packages</a></div>
   <div><b>WRF · 0.5 km</b>Operational forecasts for Barranquilla</div>
 </div></div>
 <div class="sponsors"><div class="wrap">
@@ -328,6 +328,82 @@ projects = pagehead('Projects &amp; funding', 'Externally funded research progra
 </div></section>'''
 write('projects/index.html', shell('Projects & funding: AML-CS', projects, 'Projects', depth=1))
 
+
+# ---------------------------------------------------------------- SOFTWARE
+teda_methods = [
+ ('AnalysisEnKF','EnKF with the full covariance matrix','Evensen (2009)'),
+ ('AnalysisEnKFNaive','EnKF via an iterative Sherman-Morrison formula','Nino-Ruiz, Sandu, Anderson (2015)'),
+ ('AnalysisEnKFCholesky','EnKF via Cholesky decomposition','Mandel (2006)'),
+ ('AnalysisEnKFModifiedCholesky','EnKF via modified Cholesky decomposition','Nino-Ruiz, Sandu, Deng (2018)'),
+ ('AnalysisEnKFShrinkagePrecision','EnKF with shrinkage precision matrix','Nino-Ruiz, Sandu (2015)'),
+ ('AnalysisEnKFBLoc','EnKF with B-localization','Greybush et al. (2011)'),
+ ('AnalysisEnSRF','Ensemble square root filter','Tippett et al. (2003)'),
+ ('AnalysisETKF','Ensemble transform Kalman filter','Bishop, Etherton, Majumdar (2001)'),
+ ('AnalysisLETKF','Local ensemble transform Kalman filter','Hunt, Kostelich, Szunyogh (2007)'),
+ ('AnalysisLEnKF','Local ensemble Kalman filter','Ott et al. (2004)'),
+]
+mrows = ''.join(f'<tr><td><code>{c}</code></td><td>{d}</td><td>{r}</td></tr>' for c,d,r in teda_methods)
+sw = pagehead('Software', 'Open-source code from the lab. Every package is documented in a SoftwareX paper and lives on GitHub.', 'Software',
+  '<div><b>4</b>Packages</div><div><b>4</b>SoftwareX papers</div><div><b>10</b>Ensemble methods in TEDA</div>') + f"""
+<section style="padding:64px 0"><div class="wrap">
+  <div class="feat" id="pyteda">
+    <figure><picture><source srcset="../assets/img/figures/qg-model.webp" type="image/webp"><img src="../assets/img/figures/qg-model.jpg" alt="1.5-layer quasi-geostrophic model: potential vorticity and streamfunction"></picture><figcaption>1.5-layer quasi-geostrophic model on a 193 × 193 grid, one of the benchmark models: potential vorticity (left) and streamfunction (right).</figcaption></figure>
+    <div>
+      <span class="status">Benchmarking platform · FastAPI · 2026</span>
+      <h3 style="margin-top:14px">PyTEDA-web</h3>
+      <div class="meta">Nino-Ruiz, E. D. · SoftwareX 34, 102738 · 2026</div>
+      <p>A web platform for interactive data assimilation benchmarking. Experiments run on the server and stream their output to the browser in real time, and every run is stored so it can be compared later. It builds on the TEDA code base and adds larger test models such as the quasi-geostrophic model shown here.</p>
+      <p style="margin:0"><a class="btn dark" href="https://github.com/enino84/pyTEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2026.102738">Paper</a></p>
+    </div>
+  </div>
+</div></section>
+
+<section class="tint" id="teda"><div class="wrap">
+  <div class="sec-head"><h2>TEDA</h2><p>A lightweight, object-oriented Python toolbox for teaching ensemble-based data assimilation. Students pick a method, a toy model and an observation setup, run the simulation and look at how background and analysis errors evolve.</p></div>
+  <div class="two" style="align-items:start">
+    <div class="prose">
+      <h3 style="margin-top:0">How easy is it to use?</h3>
+      <pre><code>from analysis.analysis_enkf_modified_cholesky import AnalysisEnKFModifiedCholesky
+
+model = Lorenz96()
+background = Background(model, ensemble_size=20)
+analysis = AnalysisEnKFModifiedCholesky(model, r=2)
+observation = Observation(m=32, std_obs=0.01)
+
+params = {{'obs_freq': 0.1, 'obs_times': 10, 'inf_fact': 1.04}}
+simulation = Simulation(model, background, analysis, observation, params=params)
+simulation.run()
+
+errb, erra = simulation.get_errors()   # background and analysis errors per step</code></pre>
+      <p>Toy models included: the Duffing equation (2 variables), Lorenz-63 (3 variables) and Lorenz-96 (40 variables), all chaotic under the right parameters. New models and methods plug in through the same abstract classes.</p>
+      <p style="margin:0"><a class="btn dark" href="https://github.com/enino84/TEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2025.102297">Paper, SoftwareX 2025</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1007/978-3-031-08760-8_60">ICCS 2022</a></p>
+    </div>
+    <div class="prose" style="max-width:none">
+      <h3 style="margin-top:0">Supported methods</h3>
+      <table><thead><tr><th>Class</th><th>Method</th><th>Reference</th></tr></thead><tbody>{mrows}</tbody></table>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-head"><h2>Research packages</h2><p>Code we use in our own experiments, packaged for reuse.</p></div>
+  <div class="projects">
+    <div class="proj" id="amlcs-da">
+      <div class="funder">Research package · Python · SoftwareX 2023</div>
+      <h3>AMLCS-DA</h3>
+      <p>Data assimilation for atmospheric general circulation models. This is the package the lab uses for experiments with the SPEEDY model at near-operational resolutions, including ensemble-based methods for its leapfrog integration scheme.</p>
+      <div class="row"><a href="https://github.com/enino84/AMLCS"><b>GitHub</b></a><a href="https://doi.org/10.1016/j.softx.2023.101374"><b>Paper</b></a><a href="https://doi.org/10.1002/qj.4424"><b>QJRMS 2023</b></a></div>
+    </div>
+    <div class="proj amber" id="mcholesky">
+      <div class="funder">Statistical package · SoftwareX 2025</div>
+      <h3>Precision matrices via modified Cholesky decomposition</h3>
+      <p>The <code>aml_pred_assim</code> package estimates precision (inverse covariance) matrices from small samples in high dimensions via a modified Cholesky decomposition. It downloads climate fields from the Copernicus Climate Data Store, builds the predecessor structure of each grid point and fits the sparse factors with ridge regression, saving everything to NetCDF.</p>
+      <div class="row"><a href="https://github.com/Dysaca22/aml_pred_assim"><b>GitHub</b></a><a href="https://github.com/Dysaca22/aml_pred_assim/blob/main/Modules_Guide.md"><b>Modules guide</b></a><a href="https://doi.org/10.1016/j.softx.2025.102125"><b>Paper</b></a></div>
+    </div>
+  </div>
+</div></section>"""
+write('software/index.html', shell('Software · AML-CS', sw, 'Software', depth=1))
+
 # ---------------------------------------------------------------- PEOPLE
 def person(img, name, role, link=''):
     im = f'<img src="../assets/img/people/{img}" alt="{name}">' if img else '<i></i>'
@@ -440,9 +516,7 @@ res = pagehead('Resources', 'Guides for the Universidad del Norte HPC cluster, t
   <div class="sec-head"><h2>Tools &amp; software</h2><p>Open-source code and operational systems maintained by the group.</p></div>
   <div class="guides">
     <a class="guide" href="../wrf-baq-0.5km/"><h3>WRF-BAQ 0.5 km forecast viewer</h3><p>Barranquilla forecasts at 0.5 km grid spacing, updated every 3 hours on the Granado HPC cluster.</p><span>Operational</span></a>
-    <a class="guide" href="https://github.com/enino84/TEDA"><h3>TEDA</h3><p>Lightweight Python framework for teaching ensemble-based data assimilation. SoftwareX 2025.</p><span>GitHub</span></a>
-    <a class="guide" href="https://doi.org/10.1016/j.softx.2023.101374"><h3>AMLCS-DA</h3><p>Data assimilation package in Python for atmospheric general circulation models. SoftwareX 2023.</p><span>SoftwareX</span></a>
-    <a class="guide" href="https://doi.org/10.1016/j.softx.2025.102125"><h3>Precision matrices via modified Cholesky</h3><p>Statistical package for computing precision covariance matrices. SoftwareX 2025.</p><span>SoftwareX</span></a>
+    <a class="guide" href="../software/"><h3>Software packages</h3><p>TEDA, PyTEDA-web, AMLCS-DA and the modified Cholesky precision package, all open source and documented in SoftwareX.</p><span>Software page</span></a>
   </div>
 </div></section>'''
 write('resources/index.html', shell('Resources: AML-CS', res, 'Resources', depth=1))

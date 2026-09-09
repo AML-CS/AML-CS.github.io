@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Software · AML-CS</title>
+<meta name="description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<meta property="og:title" content="Software · AML-CS"><meta property="og:description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<link rel="icon" href="../assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+
+</head>
+<body>
+<header class="site"><div class="wrap nav">
+  <a href="../"><img class="logo" src="../assets/img/logo.png" alt="AML-CS: Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul><li><a href="../">Home</a></li><li><a href="../#research">Research</a></li><li><a href="../projects/">Projects</a></li><li><a href="../publications/">Publications</a></li><li><a href="../software/" aria-current="page">Software</a></li><li><a href="../people/">People</a></li><li><a href="../talks/">Talks & events</a></li><li><a href="../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
+</div></header>
+<div class="pagehead"><div class="wrap">
+  <div><div class="crumb"><a href="../">Home</a> / Software</div><h1>Software</h1><p>Open-source code from the lab. Every package is documented in a SoftwareX paper and lives on GitHub.</p></div>
+  <div class="counts"><div><b>4</b>Packages</div><div><b>4</b>SoftwareX papers</div><div><b>10</b>Ensemble methods in TEDA</div></div>
+</div></div>
+<section style="padding:64px 0"><div class="wrap">
+  <div class="feat" id="pyteda">
+    <figure><picture><source srcset="../assets/img/figures/qg-model.webp" type="image/webp"><img src="../assets/img/figures/qg-model.jpg" alt="1.5-layer quasi-geostrophic model: potential vorticity and streamfunction"></picture><figcaption>1.5-layer quasi-geostrophic model on a 193 × 193 grid, one of the benchmark models: potential vorticity (left) and streamfunction (right).</figcaption></figure>
+    <div>
+      <span class="status">Benchmarking platform · FastAPI · 2026</span>
+      <h3 style="margin-top:14px">PyTEDA-web</h3>
+      <div class="meta">Nino-Ruiz, E. D. · SoftwareX 34, 102738 · 2026</div>
+      <p>A web platform for interactive data assimilation benchmarking. Experiments run on the server and stream their output to the browser in real time, and every run is stored so it can be compared later. It builds on the TEDA code base and adds larger test models such as the quasi-geostrophic model shown here.</p>
+      <p style="margin:0"><a class="btn dark" href="https://github.com/enino84/pyTEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2026.102738">Paper</a></p>
+    </div>
+  </div>
+</div></section>
+
+<section class="tint" id="teda"><div class="wrap">
+  <div class="sec-head"><h2>TEDA</h2><p>A lightweight, object-oriented Python toolbox for teaching ensemble-based data assimilation. Students pick a method, a toy model and an observation setup, run the simulation and look at how background and analysis errors evolve.</p></div>
+  <div class="two" style="align-items:start">
+    <div class="prose">
+      <h3 style="margin-top:0">How easy is it to use?</h3>
+      <pre><code>from analysis.analysis_enkf_modified_cholesky import AnalysisEnKFModifiedCholesky
+
+model = Lorenz96()
+background = Background(model, ensemble_size=20)
+analysis = AnalysisEnKFModifiedCholesky(model, r=2)
+observation = Observation(m=32, std_obs=0.01)
+
+params = {'obs_freq': 0.1, 'obs_times': 10, 'inf_fact': 1.04}
+simulation = Simulation(model, background, analysis, observation, params=params)
+simulation.run()
+
+errb, erra = simulation.get_errors()   # background and analysis errors per step</code></pre>
+      <p>Toy models included: the Duffing equation (2 variables), Lorenz-63 (3 variables) and Lorenz-96 (40 variables), all chaotic under the right parameters. New models and methods plug in through the same abstract classes.</p>
+      <p style="margin:0"><a class="btn dark" href="https://github.com/enino84/TEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2025.102297">Paper, SoftwareX 2025</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1007/978-3-031-08760-8_60">ICCS 2022</a></p>
+    </div>
+    <div class="prose" style="max-width:none">
+      <h3 style="margin-top:0">Supported methods</h3>
+      <table><thead><tr><th>Class</th><th>Method</th><th>Reference</th></tr></thead><tbody><tr><td><code>AnalysisEnKF</code></td><td>EnKF with the full covariance matrix</td><td>Evensen (2009)</td></tr><tr><td><code>AnalysisEnKFNaive</code></td><td>EnKF via an iterative Sherman-Morrison formula</td><td>Nino-Ruiz, Sandu, Anderson (2015)</td></tr><tr><td><code>AnalysisEnKFCholesky</code></td><td>EnKF via Cholesky decomposition</td><td>Mandel (2006)</td></tr><tr><td><code>AnalysisEnKFModifiedCholesky</code></td><td>EnKF via modified Cholesky decomposition</td><td>Nino-Ruiz, Sandu, Deng (2018)</td></tr><tr><td><code>AnalysisEnKFShrinkagePrecision</code></td><td>EnKF with shrinkage precision matrix</td><td>Nino-Ruiz, Sandu (2015)</td></tr><tr><td><code>AnalysisEnKFBLoc</code></td><td>EnKF with B-localization</td><td>Greybush et al. (2011)</td></tr><tr><td><code>AnalysisEnSRF</code></td><td>Ensemble square root filter</td><td>Tippett et al. (2003)</td></tr><tr><td><code>AnalysisETKF</code></td><td>Ensemble transform Kalman filter</td><td>Bishop, Etherton, Majumdar (2001)</td></tr><tr><td><code>AnalysisLETKF</code></td><td>Local ensemble transform Kalman filter</td><td>Hunt, Kostelich, Szunyogh (2007)</td></tr><tr><td><code>AnalysisLEnKF</code></td><td>Local ensemble Kalman filter</td><td>Ott et al. (2004)</td></tr></tbody></table>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-head"><h2>Research packages</h2><p>Code we use in our own experiments, packaged for reuse.</p></div>
+  <div class="projects">
+    <div class="proj" id="amlcs-da">
+      <div class="funder">Research package · Python · SoftwareX 2023</div>
+      <h3>AMLCS-DA</h3>
+      <p>Data assimilation for atmospheric general circulation models. This is the package the lab uses for experiments with the SPEEDY model at near-operational resolutions, including ensemble-based methods for its leapfrog integration scheme.</p>
+      <div class="row"><a href="https://github.com/enino84/AMLCS"><b>GitHub</b></a><a href="https://doi.org/10.1016/j.softx.2023.101374"><b>Paper</b></a><a href="https://doi.org/10.1002/qj.4424"><b>QJRMS 2023</b></a></div>
+    </div>
+    <div class="proj amber" id="mcholesky">
+      <div class="funder">Statistical package · SoftwareX 2025</div>
+      <h3>Precision matrices via modified Cholesky decomposition</h3>
+      <p>The <code>aml_pred_assim</code> package estimates precision (inverse covariance) matrices from small samples in high dimensions via a modified Cholesky decomposition. It downloads climate fields from the Copernicus Climate Data Store, builds the predecessor structure of each grid point and fits the sparse factors with ridge regression, saving everything to NetCDF.</p>
+      <div class="row"><a href="https://github.com/Dysaca22/aml_pred_assim"><b>GitHub</b></a><a href="https://github.com/Dysaca22/aml_pred_assim/blob/main/Modules_Guide.md"><b>Modules guide</b></a><a href="https://doi.org/10.1016/j.softx.2025.102125"><b>Paper</b></a></div>
+    </div>
+  </div>
+</div></section>
+<footer class="site"><div class="wrap">
+  <div>
+    <a href="../"><img class="logo-foot" src="../assets/img/logo.png" alt="AML-CS"></a>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:enino@uninorte.edu.co">enino@uninorte.edu.co</a></p>
+  </div>
+  <div><h5>Lab</h5><ul><li><a href="../#research">Research</a></li><li><a href="../projects/">Projects &amp; funding</a></li><li><a href="../people/">People</a></li></ul></div>
+  <div><h5>Output</h5><ul><li><a href="../publications/">Publications</a></li><li><a href="../talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="../software/">Software</a></li><li><a href="../resources/">HPC guides</a></li><li><a href="../wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li></ul></div>
+  <div class="copy"><span>© 2026 AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
+</div></footer>
+<script src="../assets/js/site.js"></script>
+</body></html>
