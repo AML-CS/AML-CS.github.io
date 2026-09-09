@@ -353,7 +353,7 @@ sw = pagehead('Software', 'Open-source code from the lab. Every package is docum
       <h3 style="margin-top:14px">PyTEDA-web</h3>
       <div class="meta">Nino-Ruiz, E. D. · SoftwareX 34, 102738 · 2026</div>
       <p>A web platform for interactive data assimilation benchmarking. Experiments run on the server and stream their output to the browser in real time, and every run is stored so it can be compared later. It builds on the TEDA code base and adds larger test models such as the quasi-geostrophic model shown here.</p>
-      <p style="margin:0"><a class="btn dark" href="https://github.com/enino84/pyTEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2026.102738">Paper</a></p>
+      <p style="margin:0"><a class="btn primary" href="pyteda/">About PyTEDA-web</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/pyTEDA">GitHub</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1016/j.softx.2026.102738">Paper</a></p>
     </div>
   </div>
 </div></section>
@@ -403,6 +403,32 @@ errb, erra = simulation.get_errors()   # background and analysis errors per step
   </div>
 </div></section>"""
 write('software/index.html', shell('Software · AML-CS', sw, 'Software', depth=1))
+
+# PyTEDA dedicated page
+pyteda = f"""
+<div class="pagehead" style="padding-bottom:0"><div class="wrap" style="display:block">
+  <div class="crumb"><a href="../../">Home</a> / <a href="../">Software</a> / PyTEDA-web</div>
+  <h1>PyTEDA-web</h1>
+  <p style="max-width:60ch">Interactive data assimilation benchmarking in the browser: experiments run on the server, stream their results live and stay stored so you can come back and compare them.</p>
+  <div class="hero-media"><picture><source srcset="../../assets/img/figures/qg-model.webp" type="image/webp"><img src="../../assets/img/figures/qg-model.jpg" alt="1.5-layer quasi-geostrophic model: potential vorticity and streamfunction on a 193 by 193 grid"></picture></div>
+</div></div>
+<section style="padding-top:40px"><div class="wrap two" style="align-items:start">
+  <div class="prose">
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">Above: 1.5-layer quasi-geostrophic model on a 193 × 193 grid, potential vorticity (left) and streamfunction (right), one of the benchmark models in PyTEDA-web.</p>
+    <h2 style="margin-top:8px">What it does</h2>
+    <p>PyTEDA-web is a FastAPI platform built on the TEDA code base. Instead of running scripts locally, you configure a data assimilation experiment in the browser, launch it, and watch the output arrive in real time while it runs on the server.</p>
+    <p>Every experiment is tracked and persisted, so results from different methods, ensemble sizes, observation networks or models can be compared side by side days later, without rerunning anything.</p>
+    <h2>Benchmark models</h2>
+    <p>Besides the Duffing, Lorenz-63 and Lorenz-96 models inherited from TEDA, PyTEDA-web adds larger test cases such as the 1.5-layer quasi-geostrophic model shown above, which brings realistic multi-scale dynamics to the benchmarks at a size that still runs interactively.</p>
+    <h2>Methods</h2>
+    <p>All ensemble-based methods available in TEDA can be benchmarked: the stochastic EnKF and its Cholesky and modified Cholesky variants, shrinkage precision estimators, B-localization, EnSRF, ETKF, LETKF and LEnKF.</p>
+    <p style="margin-top:28px"><a class="btn dark" href="https://github.com/enino84/pyTEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2026.102738">Paper, SoftwareX 2026</a></p>
+  </div>
+  {facts([('Package','PyTEDA-web'),('Type','Web platform · FastAPI · Python'),('Paper','SoftwareX 34, 102738 (2026)'),('Author','Elias D. Nino-Ruiz'),('Builds on','TEDA (SoftwareX 2025)'),('Code','github.com/enino84/pyTEDA'),('License','Open source')])}
+</div></section>
+"""
+write('software/pyteda/index.html', shell('PyTEDA-web · AML-CS', pyteda, 'Software', depth=2))
+
 
 # ---------------------------------------------------------------- PEOPLE
 def person(img, name, role, link=''):
