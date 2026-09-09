@@ -57,6 +57,7 @@ section.dark{background:var(--navy);color:#fff}
 .prose h2{font-size:28px;margin:48px 0 16px}.prose h3{font-size:21px;margin:32px 0 10px}.prose h4{font-size:17px;margin:24px 0 8px}
 .prose p{margin:0 0 18px}.prose ul,.prose ol{padding-left:24px}.prose li{margin:6px 0}
 .prose pre{background:#0F2B4C;color:#E6F0FA;padding:18px 20px;border-radius:8px;overflow:auto;font-size:14px;line-height:1.5}
+#teda pre{overflow:visible;white-space:pre-wrap;word-break:break-word;font-size:13.5px}
 .prose code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em}
 .prose :not(pre)>code{background:var(--sea);padding:2px 6px;border-radius:4px;color:var(--navy)}
 .prose table{border-collapse:collapse;width:100%;font-size:16px;margin:16px 0}

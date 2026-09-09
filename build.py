@@ -363,18 +363,24 @@ sw = pagehead('Software', 'Open-source code from the lab. Every package is docum
   <div class="two" style="align-items:start">
     <div class="prose">
       <h3 style="margin-top:0">How easy is it to use?</h3>
-      <pre><code>from analysis.analysis_enkf_modified_cholesky import AnalysisEnKFModifiedCholesky
+      <pre><code>from analysis.analysis_enkf_modified_cholesky \\
+    import AnalysisEnKFModifiedCholesky
 
 model = Lorenz96()
 background = Background(model, ensemble_size=20)
 analysis = AnalysisEnKFModifiedCholesky(model, r=2)
 observation = Observation(m=32, std_obs=0.01)
 
-params = {{'obs_freq': 0.1, 'obs_times': 10, 'inf_fact': 1.04}}
-simulation = Simulation(model, background, analysis, observation, params=params)
+params = {{'obs_freq': 0.1,
+          'obs_times': 10,
+          'inf_fact': 1.04}}
+simulation = Simulation(model, background,
+                        analysis, observation,
+                        params=params)
 simulation.run()
 
-errb, erra = simulation.get_errors()   # background and analysis errors per step</code></pre>
+# background and analysis errors per step
+errb, erra = simulation.get_errors()</code></pre>
       <p>Toy models included: the Duffing equation (2 variables), Lorenz-63 (3 variables) and Lorenz-96 (40 variables), all chaotic under the right parameters. New models and methods plug in through the same abstract classes.</p>
       <p style="margin:0"><a class="btn dark" href="https://github.com/enino84/TEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2025.102297">Paper, SoftwareX 2025</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1007/978-3-031-08760-8_60">ICCS 2022</a></p>
     </div>
