@@ -468,10 +468,10 @@ people = pagehead('People', 'The director, current students and everyone who has
     {person('alejandro-manotas.jpg','Alejandro Manotas','M.Sc. in Computer Science')}
     {person('omar-mejia.jpg','Omar Angel Mejia Suarez','M.Sc. in Computer Science · Data assimilation for air-quality estimation','https://sites.google.com/view/omarmejiasuarez/inicio')}
     {person('sebastian-ariza.jpg','Sebastian Ariza','M.Sc. in Computer Science')}
-    {person('juan-calabria.jpg','Juan C. Calabria Sarmiento','M.Sc. in Computer Science · 4D-Var for wind energy estimation')}
-    {person('luis-guzman.jpg','Luis G. Guzman Reyes','M.Sc. in Computer Science · Shrinkage covariance estimation in EnKF')}
-    {person('rolando-beltran.jpg','Rolando Beltran Arrieta','M.Sc. in Computer Science · Adjoint-free 4D-Var')}
-    {person('alfonso-mancilla.jpg','Alfonso Mancilla Herrera','M.Sc. in Computer Science · Non-Gaussian data assimilation')}
+    {person('juan-calabria.jpg','Juan C. Calabria Sarmiento','Ph.D. in Computer Science · 4D-Var for wind energy estimation')}
+    {person('luis-guzman.jpg','Luis G. Guzman Reyes','Ph.D. in Computer Science · Shrinkage covariance estimation in EnKF')}
+    {person('rolando-beltran.jpg','Rolando Beltran Arrieta','Ph.D. in Computer Science · Adjoint-free 4D-Var')}
+    {person('alfonso-mancilla.jpg','Alfonso Mancilla Herrera','Ph.D. in Computer Science · Non-Gaussian data assimilation')}
     {person('randy-consuegra.jpg','Randy Consuegra Ortega','M.Sc. in Computer Science · AMLCS-DA package')}
     {person('felipe-acevedo.jpg','Felipe Acevedo García','M.Sc. in Computer Science · Data-driven weather forecast')}
     {person('luis-morales.jpg','Luis E. Morales Retat','M.Sc. in Computer Science · Adaptive localization via Tabu Search')}
