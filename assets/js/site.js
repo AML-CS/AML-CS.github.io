@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function show(n) { i = (n + items.length) % items.length; img.src = items[i].src; img.alt = items[i].alt; cap.textContent = items[i].cap; count.textContent = (i + 1) + ' / ' + items.length; }
   function openAt(n) { const f = figs[n]; const group = f.closest('.strip') ? [...f.closest('.strip').querySelectorAll('figure')] : [f]; items = group.map(info); n = group.indexOf(f); show(n); box.classList.add('on'); document.body.style.overflow = 'hidden'; open = true; box.querySelector('.lb-close').focus(); }
   function close() { box.classList.remove('on'); document.body.style.overflow = ''; open = false; }
-  figs.forEach((f, n) => { f.style.cursor = 'zoom-in'; f.tabIndex = 0; f.addEventListener('click', () => openAt(n)); f.addEventListener('keydown', e => { if (e.key === 'Enter') openAt(n); }); });
+  figs.forEach((f, n) => { f.style.cursor = 'zoom-in'; f.tabIndex = 0; f.addEventListener('click', e => { if (e.target.closest('a')) return; openAt(n); }); f.addEventListener('keydown', e => { if (e.key === 'Enter') openAt(n); }); });
   box.querySelector('.lb-close').addEventListener('click', close);
   box.querySelector('.lb-prev').addEventListener('click', () => show(i - 1));
   box.querySelector('.lb-next').addEventListener('click', () => show(i + 1));
