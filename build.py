@@ -465,71 +465,15 @@ swesphere = f"""
   <div class="hero-media" style="background:transparent;box-shadow:none;padding:0;border-radius:0;max-width:1060px"><picture><source srcset="../../assets/img/figures/swesphere-globes-dark.webp" type="image/webp"><img src="../../assets/img/figures/swesphere-globes-dark.png" alt="Zonal wind, meridional wind and depth anomaly of the two_jets regime on the sphere"></picture></div>
 </div></div>
 
-<section style="padding-top:40px"><div class="wrap two" style="align-items:start">
-  <div class="prose">
-    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">Above: a state of the <code>two_jets</code> record. Zonal wind, meridional wind, and the departure of the depth from its zonal mean drawn as relief (exaggerated). The polar caps under the sponge are grey.</p>
+<section style="padding-top:40px"><div class="wrap">
+  <div class="prose" style="max-width:76ch;margin:0 auto">
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left;max-width:76ch;margin:0 auto 8px">Above: a state of the <code>two_jets</code> record. Zonal wind, meridional wind, and the departure of the depth from its zonal mean drawn as relief (exaggerated). The polar caps under the sponge are grey.</p>
 
     <h2 style="margin-top:8px">What it is</h2>
     <p>The shallow-water equations on a sphere are the smallest system that carries the ingredients of large-scale atmospheric flow: a balance relation between wind and mass, fast gravity waves alongside slow balanced motion, and barotropic instability that sustains turbulence. swesphere solves them with vector-invariant momentum equations and a flux-form continuity equation, on a regular latitude-longitude grid with an exact zonal derivative by FFT, second-order centred meridional differences and fourth-order Runge-Kutta stepping. Dissipation is an exponential filter in spherical harmonics plus a sponge on the wind at the polar caps.</p>
     <p>At the default truncation the grid is 66 &times; 132 and the state has 26,136 variables, which integrates in about two seconds per model day on one core: small enough for hundreds of forecasts on a workstation, large enough to behave like the atmosphere.</p>
 
-    <h2>The interface</h2>
-    <p>The state is a plain vector <code>x = [u, v, h]</code> and the model is a function that advances it, so an external program drives it without knowing anything about the discretization.</p>
-    <pre><code>from swesphere import presets, climatology, diagnostics
-
-model, x0 = presets.two_jets()        # 66 x 132, dt = 120 s
-x1 = model.propagate(x0, [0.0, 6*3600.0])          # 6 h
-u, v, h = model.unpack(x1)            # or model.var_blocks
-mask = model.interior_mask()          # rows outside the polar sponge
-
-S = climatology.build_climatology(    # 200 states, 2 days apart
-        model, x0, spinup_days=40,
-        n_snapshots=200, every_days=2)
-scales, per_field = climatology.anomaly_scales(model, S)
-print(diagnostics.invariants(model, x1))   # mass, energy, enstrophy</code></pre>
-
-    <h2>Plugging in your own integrator</h2>
-    <p>The right-hand side is published and the time stepper is looked up in a registry, so a new scheme runs with the same grid, filter, sponge and forcing as the shipped Runge-Kutta, and is measured by the same experiments: order of convergence, conservation of the invariants, largest stable step, cost per model day and the eddy amplitude it sustains.</p>
-    <pre><code>from swesphere.integrators import INTEGRATORS
-
-def euler(rhs, u, v, h, dt):     # rhs(u,v,h) -&gt; tendencies
-    du, dv, dh = rhs(u, v, h)
-    return u + dt*du, v + dt*dv, h + dt*dh
-
-INTEGRATORS["euler"] = euler
-model, x0 = presets.two_jets(scheme="euler", dt=30.0)</code></pre>
-    <p><code>swesphere.dynamics.rhs(u, v, h, grid)</code> is the physics alone; <code>model.rhs(u, v, h)</code> adds the forcing of the preset.</p>
-
-
-    <h2>API</h2>
-    <p>Everything is importable and callable directly; the Docker services are only how the experiments of the paper are reproduced. These are the entry points.</p>
-    <table><thead><tr><th>Call</th><th>What it gives you</th></tr></thead><tbody><tr><td><code>presets.waves()<br>presets.one_jet(tau_days=5, h0=1e4)<br>presets.two_jets(...)<br>presets.make(name, **overrides)</code></td><td>a configured model and its initial state, <code>(model, x0)</code>. Any keyword overrides the defaults: <code>LMAX</code>, <code>dt</code>, <code>filter_every</code>, <code>scheme</code>, <code>n_pole_rows</code>.</td></tr><tr><td><code>model.propagate(x0, [t0, t1])</code></td><td>integrate the state vector from <code>t0</code> to <code>t1</code> (seconds). <code>just_final_state=False</code> returns every step.</td></tr><tr><td><code>model.pack(u, v, h)<br>model.unpack(x)</code></td><td>between the three fields and the state vector.</td></tr><tr><td><code>model.var_blocks<br>model.field_size, model.dim<br>model.Nlat, model.Nlon</code></td><td>the slice of each field in the vector, and the sizes.</td></tr><tr><td><code>model.interior_mask()</code></td><td>boolean mask of the rows outside the polar sponge: the part of the domain meant to be used.</td></tr><tr><td><code>model.initial_condition(kind, seed=0, **kw)</code></td><td><code>'rossby'</code> (add <code>perturbed=True</code> for a seeded perturbation), <code>'tc2'</code>, <code>'galewsky'</code>.</td></tr><tr><td><code>model.rhs(u, v, h)<br>dynamics.rhs(u, v, h, grid)</code></td><td>the tendencies with and without the forcing of the preset.</td></tr><tr><td><code>dynamics.relative_vorticity(u, v, grid)<br>dynamics.divergence(u, v, grid)</code></td><td>diagnostics on the fields.</td></tr><tr><td><code>climatology.build_climatology(model, x0, spinup_days, n_snapshots, every_days)</code></td><td>a record of states as a <code>(n, dim)</code> array.</td></tr><tr><td><code>climatology.anomaly_scales(model, S)<br>climatology.lag_correlation(model, S, lag=1, field='h')</code></td><td>the scale of the departures from the record mean, and how fast the record decorrelates.</td></tr><tr><td><code>diagnostics.invariants(model, x, interior=False)</code></td><td>global mass, total energy and potential enstrophy.</td></tr><tr><td><code>diagnostics.error_norms(model, x, x_ref, field='h')</code></td><td>normalized l1, l2 and l-infinity errors.</td></tr><tr><td><code>INTEGRATORS[name] = stepper</code></td><td>register a time-stepping scheme; pass <code>scheme=name</code> to a preset.</td></tr></tbody></table>
-    <p>The state vector is <code>x = [u, v, h]</code>, each field flattened row-major from north to south on a grid of <code>2(LMAX+1)</code> by <code>4(LMAX+1)</code> points. Time is in seconds. Depths are in metres, winds in metres per second.</p>
-
-    <h2>Three regimes</h2>
-    <p>Each preset is a function that returns a configured model and its initial state, so an experiment names its regime in one line. The statistics below were measured on 200-state records with the default settings.</p>
-    <table><thead><tr><th>Preset</th><th>What it is</th><th>Eddy std of <i>h</i></th><th>|U|max</th><th>Regime</th></tr></thead><tbody>{srows}</tbody></table>
-    <p class="fig"><picture><source srcset="../../assets/img/figures/swesphere-regimes.webp" type="image/webp"><img class="fit" src="../../assets/img/figures/swesphere-regimes.jpg" alt="The three regimes of swesphere on the sphere"></picture></p>
-    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">The three presets, same fields as above. Note the scales: the meridional wind and the depth anomaly of <code>waves</code> are an order of magnitude weaker than those of the forced presets.</p>
-
-    <h2>Verified, and its limits measured</h2>
-    <p>On the steady zonal flow of Williamson et al.\u2019s test case 2 the normalized <i>l</i><sub>2</sub> error of the depth after five days is 2.2&times;10<sup>-4</sup> at the default truncation and 5.5&times;10<sup>-5</sup> at twice the resolution: second order, as expected from the centred meridional differences. The Galewsky barotropic instability reproduces the published reference solution, with the global mass conserved to 10<sup>-6</sup> and the total energy to 10<sup>-4</sup> over ten days.</p>
-    <p>Two limits are documented rather than hidden. The polar sponge, not the discretization, dominates the error of the default configuration on tests whose flow extends to the poles. And because the filter acts every few steps rather than every few seconds, the eddy amplitude of a regime is set by the interval between filter applications, not by the time step: runs that share an interval and differ by a factor of six in the time step agree within the natural variability of the flow.</p>
-
-    <h2>Reproducing the experiments</h2>
-    <p>Each experiment is a Docker Compose service that writes its results as CSV after every case; the figures are regenerated from those files.</p>
-    <pre><code>docker compose build test
-docker compose run --rm test
-docker compose run -d verification   # independent of each other
-docker compose run -d stability
-docker compose run -d regimes
-docker compose run -d footprint      # after regimes
-docker compose run --rm figures      # after all</code></pre>
-
-    <p style="margin-top:28px"><a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a></p>
-  </div>
-  {facts([('Package','swesphere'),('Type','Model &middot; Python &middot; NumPy, SciPy, pyshtools'),('State','26,136 variables (66 &times; 132, three fields)'),('Cost','about 2 s per model day, one core'),('Regimes','waves, one_jet, two_jets'),('Author','Elias D. Nino-Ruiz'),('Code','github.com/enino84/swesphere'),('License','MIT')])}
-</div></section>
+  </div></div></section>
 
 <section class="tint"><div class="wrap">
   <div class="sec-head"><h2>How it is put together</h2><p>One object composes five small modules and exposes the state as a vector. Presets configure it, helper modules measure it, and anything outside drives it through the same three calls.</p></div>
@@ -612,6 +556,68 @@ docker compose run --rm figures      # after all</code></pre>
   </svg>
   </div>
   <p style="font-family:var(--display);font-size:13px;color:var(--muted);margin-top:14px">The amber box is the one you are meant to replace: register a stepper in <code>INTEGRATORS</code> and it runs with the same grid, dissipation and forcing.</p>
+</div></section>
+
+
+<section><div class="wrap"><div class="prose" style="max-width:76ch;margin:0 auto">
+    <h2>The interface</h2>
+    <p>The state is a plain vector <code>x = [u, v, h]</code> and the model is a function that advances it, so an external program drives it without knowing anything about the discretization.</p>
+    <pre><code>from swesphere import presets, climatology, diagnostics
+
+model, x0 = presets.two_jets()        # 66 x 132, dt = 120 s
+x1 = model.propagate(x0, [0.0, 6*3600.0])          # 6 h
+u, v, h = model.unpack(x1)            # or model.var_blocks
+mask = model.interior_mask()          # rows outside the polar sponge
+
+S = climatology.build_climatology(    # 200 states, 2 days apart
+        model, x0, spinup_days=40,
+        n_snapshots=200, every_days=2)
+scales, per_field = climatology.anomaly_scales(model, S)
+print(diagnostics.invariants(model, x1))   # mass, energy, enstrophy</code></pre>
+
+    <h2>Plugging in your own integrator</h2>
+    <p>The right-hand side is published and the time stepper is looked up in a registry, so a new scheme runs with the same grid, filter, sponge and forcing as the shipped Runge-Kutta, and is measured by the same experiments: order of convergence, conservation of the invariants, largest stable step, cost per model day and the eddy amplitude it sustains.</p>
+    <pre><code>from swesphere.integrators import INTEGRATORS
+
+def euler(rhs, u, v, h, dt):     # rhs(u,v,h) -&gt; tendencies
+    du, dv, dh = rhs(u, v, h)
+    return u + dt*du, v + dt*dv, h + dt*dh
+
+INTEGRATORS["euler"] = euler
+model, x0 = presets.two_jets(scheme="euler", dt=30.0)</code></pre>
+    <p><code>swesphere.dynamics.rhs(u, v, h, grid)</code> is the physics alone; <code>model.rhs(u, v, h)</code> adds the forcing of the preset.</p>
+
+
+    <h2>API</h2>
+    <p>Everything is importable and callable directly; the Docker services are only how the experiments of the paper are reproduced. These are the entry points.</p>
+    <table><thead><tr><th>Call</th><th>What it gives you</th></tr></thead><tbody><tr><td><code>presets.waves()<br>presets.one_jet(tau_days=5, h0=1e4)<br>presets.two_jets(...)<br>presets.make(name, **overrides)</code></td><td>a configured model and its initial state, <code>(model, x0)</code>. Any keyword overrides the defaults: <code>LMAX</code>, <code>dt</code>, <code>filter_every</code>, <code>scheme</code>, <code>n_pole_rows</code>.</td></tr><tr><td><code>model.propagate(x0, [t0, t1])</code></td><td>integrate the state vector from <code>t0</code> to <code>t1</code> (seconds). <code>just_final_state=False</code> returns every step.</td></tr><tr><td><code>model.pack(u, v, h)<br>model.unpack(x)</code></td><td>between the three fields and the state vector.</td></tr><tr><td><code>model.var_blocks<br>model.field_size, model.dim<br>model.Nlat, model.Nlon</code></td><td>the slice of each field in the vector, and the sizes.</td></tr><tr><td><code>model.interior_mask()</code></td><td>boolean mask of the rows outside the polar sponge: the part of the domain meant to be used.</td></tr><tr><td><code>model.initial_condition(kind, seed=0, **kw)</code></td><td><code>'rossby'</code> (add <code>perturbed=True</code> for a seeded perturbation), <code>'tc2'</code>, <code>'galewsky'</code>.</td></tr><tr><td><code>model.rhs(u, v, h)<br>dynamics.rhs(u, v, h, grid)</code></td><td>the tendencies with and without the forcing of the preset.</td></tr><tr><td><code>dynamics.relative_vorticity(u, v, grid)<br>dynamics.divergence(u, v, grid)</code></td><td>diagnostics on the fields.</td></tr><tr><td><code>climatology.build_climatology(model, x0, spinup_days, n_snapshots, every_days)</code></td><td>a record of states as a <code>(n, dim)</code> array.</td></tr><tr><td><code>climatology.anomaly_scales(model, S)<br>climatology.lag_correlation(model, S, lag=1, field='h')</code></td><td>the scale of the departures from the record mean, and how fast the record decorrelates.</td></tr><tr><td><code>diagnostics.invariants(model, x, interior=False)</code></td><td>global mass, total energy and potential enstrophy.</td></tr><tr><td><code>diagnostics.error_norms(model, x, x_ref, field='h')</code></td><td>normalized l1, l2 and l-infinity errors.</td></tr><tr><td><code>INTEGRATORS[name] = stepper</code></td><td>register a time-stepping scheme; pass <code>scheme=name</code> to a preset.</td></tr></tbody></table>
+    <p>The state vector is <code>x = [u, v, h]</code>, each field flattened row-major from north to south on a grid of <code>2(LMAX+1)</code> by <code>4(LMAX+1)</code> points. Time is in seconds. Depths are in metres, winds in metres per second.</p>
+
+    <h2>Three regimes</h2>
+    <p>Each preset is a function that returns a configured model and its initial state, so an experiment names its regime in one line. The statistics below were measured on 200-state records with the default settings.</p>
+    <table><thead><tr><th>Preset</th><th>What it is</th><th>Eddy std of <i>h</i></th><th>|U|max</th><th>Regime</th></tr></thead><tbody>{srows}</tbody></table>
+    <p class="fig"><picture><source srcset="../../assets/img/figures/swesphere-regimes.webp" type="image/webp"><img class="fit" src="../../assets/img/figures/swesphere-regimes.jpg" alt="The three regimes of swesphere on the sphere"></picture></p>
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">The three presets, same fields as above. Note the scales: the meridional wind and the depth anomaly of <code>waves</code> are an order of magnitude weaker than those of the forced presets.</p>
+
+    <h2>Verified, and its limits measured</h2>
+    <p>On the steady zonal flow of Williamson et al.\u2019s test case 2 the normalized <i>l</i><sub>2</sub> error of the depth after five days is 2.2&times;10<sup>-4</sup> at the default truncation and 5.5&times;10<sup>-5</sup> at twice the resolution: second order, as expected from the centred meridional differences. The Galewsky barotropic instability reproduces the published reference solution, with the global mass conserved to 10<sup>-6</sup> and the total energy to 10<sup>-4</sup> over ten days.</p>
+    <p>Two limits are documented rather than hidden. The polar sponge, not the discretization, dominates the error of the default configuration on tests whose flow extends to the poles. And because the filter acts every few steps rather than every few seconds, the eddy amplitude of a regime is set by the interval between filter applications, not by the time step: runs that share an interval and differ by a factor of six in the time step agree within the natural variability of the flow.</p>
+
+    <h2>Reproducing the experiments</h2>
+    <p>Each experiment is a Docker Compose service that writes its results as CSV after every case; the figures are regenerated from those files.</p>
+    <pre><code>docker compose build test
+docker compose run --rm test
+docker compose run -d verification   # independent of each other
+docker compose run -d stability
+docker compose run -d regimes
+docker compose run -d footprint      # after regimes
+docker compose run --rm figures      # after all</code></pre>
+
+  </div>
+  <div style="max-width:76ch;margin:44px auto 0">{facts([('Package','swesphere'),('Type','Model &middot; Python &middot; NumPy, SciPy, pyshtools'),('State','26,136 variables (66 &times; 132, three fields)'),('Cost','about 2 s per model day, one core'),('Regimes','waves, one_jet, two_jets'),('Author','Elias D. Nino-Ruiz'),('Code','github.com/enino84/swesphere'),('License','MIT')])}</div>
+  <p style="max-width:76ch;margin:28px auto 0"><a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a></p>
+  <div class="prose" style="max-width:76ch;margin:0 auto;display:none">
+  </div>
 </div></section>
 
 """

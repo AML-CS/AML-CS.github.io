@@ -10,6 +10,9 @@ Copia todo sobre la raíz del repo AML-CS.github.io y haz commit. Los .html ya e
   assets/img/figures/swesphere-globes-dark.png/.webp   para el hero (fondo transparente, texto claro)
   assets/img/figures/swesphere-regimes.jpg/.webp       los tres regímenes
 
+La página va a una sola columna (la ficha de datos quedó al final, antes del botón de GitHub)
+y el diagrama de estructura está justo después de "What it is", antes del código.
+
 La página incluye un diagrama de la estructura del modelo en SVG inline (dentro de build.py,
 sección "How it is put together"), con la paleta del sitio: se escala sin perder nitidez y no
 necesita archivo de imagen.
