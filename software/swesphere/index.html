@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>swesphere &amp;middot; AML-CS</title>
+<meta name="description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<meta property="og:title" content="swesphere &amp;middot; AML-CS"><meta property="og:description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<link rel="icon" href="../../assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+
+</head>
+<body>
+<header class="site"><div class="wrap nav">
+  <a href="../../"><img class="logo" src="../../assets/img/logo.png" alt="AML-CS: Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li><a href="../../software/" aria-current="page">Software</a></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
+</div></header>
+
+<div class="pagehead" style="padding-bottom:0"><div class="wrap" style="display:block">
+  <div class="crumb"><a href="../../">Home</a> / <a href="../">Software</a> / swesphere</div>
+  <h1>swesphere</h1>
+  <p style="max-width:62ch">Shallow-water equations on the rotating sphere: a geophysical flow small enough to experiment with, documented enough to compare against, and reproducible from a container.</p>
+  <div class="hero-media"><picture><source srcset="../../assets/img/figures/swesphere-globes.webp" type="image/webp"><img src="../../assets/img/figures/swesphere-globes.jpg" alt="Zonal wind, meridional wind and depth anomaly of the two_jets regime on the sphere"></picture></div>
+</div></div>
+
+<section style="padding-top:40px"><div class="wrap two" style="align-items:start">
+  <div class="prose">
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">Above: a state of the <code>two_jets</code> record. Zonal wind, meridional wind, and the departure of the depth from its zonal mean drawn as relief (exaggerated). The polar caps under the sponge are grey.</p>
+
+    <h2 style="margin-top:8px">What it is</h2>
+    <p>The shallow-water equations on a sphere are the smallest system that carries the ingredients of large-scale atmospheric flow: a balance relation between wind and mass, fast gravity waves alongside slow balanced motion, and barotropic instability that sustains turbulence. swesphere solves them with vector-invariant momentum equations and a flux-form continuity equation, on a regular latitude-longitude grid with an exact zonal derivative by FFT, second-order centred meridional differences and fourth-order Runge-Kutta stepping. Dissipation is an exponential filter in spherical harmonics plus a sponge on the wind at the polar caps.</p>
+    <p>At the default truncation the grid is 66 &times; 132 and the state has 26,136 variables, which integrates in about two seconds per model day on one core: small enough for hundreds of forecasts on a workstation, large enough to behave like the atmosphere.</p>
+
+    <h2>The interface</h2>
+    <p>The state is a plain vector <code>x = [u, v, h]</code> and the model is a function that advances it, so an external program drives it without knowing anything about the discretization.</p>
+    <pre><code>from swesphere import presets, climatology, diagnostics
+
+model, x0 = presets.two_jets()        # 66 x 132, dt = 120 s
+x1 = model.propagate(x0, [0.0, 6*3600.0])          # 6 h
+u, v, h = model.unpack(x1)            # or model.var_blocks
+mask = model.interior_mask()          # rows outside the polar sponge
+
+S = climatology.build_climatology(    # 200 states, 2 days apart
+        model, x0, spinup_days=40,
+        n_snapshots=200, every_days=2)
+scales, per_field = climatology.anomaly_scales(model, S)
+print(diagnostics.invariants(model, x1))   # mass, energy, enstrophy</code></pre>
+
+    <h2>Plugging in your own integrator</h2>
+    <p>The right-hand side is published and the time stepper is looked up in a registry, so a new scheme runs with the same grid, filter, sponge and forcing as the shipped Runge-Kutta, and is measured by the same experiments: order of convergence, conservation of the invariants, largest stable step, cost per model day and the eddy amplitude it sustains.</p>
+    <pre><code>from swesphere.integrators import INTEGRATORS
+
+def euler(rhs, u, v, h, dt):     # rhs(u,v,h) -&gt; tendencies
+    du, dv, dh = rhs(u, v, h)
+    return u + dt*du, v + dt*dv, h + dt*dh
+
+INTEGRATORS["euler"] = euler
+model, x0 = presets.two_jets(scheme="euler", dt=30.0)</code></pre>
+    <p><code>swesphere.dynamics.rhs(u, v, h, grid)</code> is the physics alone; <code>model.rhs(u, v, h)</code> adds the forcing of the preset.</p>
+
+    <h2>Three regimes</h2>
+    <p>Each preset is a function that returns a configured model and its initial state, so an experiment names its regime in one line. The statistics below were measured on 200-state records with the default settings.</p>
+    <table><thead><tr><th>Preset</th><th>What it is</th><th>Eddy std of <i>h</i></th><th>|U|max</th><th>Regime</th></tr></thead><tbody><tr><td><code>waves</code></td><td>Rossby waves on a zonal flow, unforced</td><td>8.8 m (decaying)</td><td>42 m/s</td><td>quasi-linear; the filter is the only sink</td></tr><tr><td><code>one_jet</code></td><td>Galewsky jet at 45&deg;N + relaxation of the zonal mean</td><td>124 &plusmn; 13 m</td><td>76 m/s</td><td>stationary, fairly regular eddies in the north</td></tr><tr><td><code>two_jets</code></td><td>Galewsky jets at &plusmn;45&deg; + the same relaxation</td><td>156 &plusmn; 13 m</td><td>76 m/s</td><td>stationary irregular turbulence in both hemispheres</td></tr></tbody></table>
+    <p class="fig"><picture><source srcset="../../assets/img/figures/swesphere-regimes.webp" type="image/webp"><img class="fit" src="../../assets/img/figures/swesphere-regimes.jpg" alt="The three regimes of swesphere on the sphere"></picture></p>
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">The three presets, same fields as above. Note the scales: the meridional wind and the depth anomaly of <code>waves</code> are an order of magnitude weaker than those of the forced presets.</p>
+
+    <h2>Verified, and its limits measured</h2>
+    <p>On the steady zonal flow of Williamson et al.’s test case 2 the normalized <i>l</i><sub>2</sub> error of the depth after five days is 2.2&times;10<sup>-4</sup> at the default truncation and 5.5&times;10<sup>-5</sup> at twice the resolution: second order, as expected from the centred meridional differences. The Galewsky barotropic instability reproduces the published reference solution, with the global mass conserved to 10<sup>-6</sup> and the total energy to 10<sup>-4</sup> over ten days.</p>
+    <p>Two limits are documented rather than hidden. The polar sponge, not the discretization, dominates the error of the default configuration on tests whose flow extends to the poles. And because the filter acts every few steps rather than every few seconds, the eddy amplitude of a regime is set by the interval between filter applications, not by the time step: runs that share an interval and differ by a factor of six in the time step agree within the natural variability of the flow.</p>
+
+    <h2>Reproducing the experiments</h2>
+    <p>Each experiment is a Docker Compose service that writes its results as CSV after every case; the figures are regenerated from those files.</p>
+    <pre><code>docker compose build test
+docker compose run --rm test
+docker compose run -d verification   # independent of each other
+docker compose run -d stability
+docker compose run -d regimes
+docker compose run -d footprint      # after regimes
+docker compose run --rm figures      # after all</code></pre>
+
+    <p style="margin-top:28px"><a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a></p>
+  </div>
+  <div class="facts"><dl><div><dt>Package</dt><dd>swesphere</dd></div><div><dt>Type</dt><dd>Model &middot; Python &middot; NumPy, SciPy, pyshtools</dd></div><div><dt>State</dt><dd>26,136 variables (66 &times; 132, three fields)</dd></div><div><dt>Cost</dt><dd>about 2 s per model day, one core</dd></div><div><dt>Regimes</dt><dd>waves, one_jet, two_jets</dd></div><div><dt>Author</dt><dd>Elias D. Nino-Ruiz</dd></div><div><dt>Code</dt><dd>github.com/enino84/swesphere</dd></div><div><dt>License</dt><dd>MIT</dd></div></dl></div>
+</div></section>
+
+<footer class="site"><div class="wrap">
+  <div>
+    <a href="../../"><img class="logo-foot" src="../../assets/img/logo.png" alt="AML-CS"></a>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:enino@uninorte.edu.co">enino@uninorte.edu.co</a></p>
+  </div>
+  <div><h5>Lab</h5><ul><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects &amp; funding</a></li><li><a href="../../people/">People</a></li></ul></div>
+  <div><h5>Output</h5><ul><li><a href="../../publications/">Publications</a></li><li><a href="../../talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="../../software/">Software</a></li><li><a href="../../resources/">HPC guides</a></li><li><a href="../../wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li></ul></div>
+  <div class="copy"><span>© 2026 AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
+</div></footer>
+<script src="../../assets/js/site.js"></script>
+</body></html>

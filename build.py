@@ -135,7 +135,7 @@ home = f'''
 <div class="stats"><div class="wrap">
   <div><b>2017</b>Founded at Universidad del Norte</div>
   <div><b>{len(PUBS)}</b>Journal &amp; conference papers</div>
-  <div><b>4</b><a href="software/" style="color:#9FC2E0">Open-source software packages</a></div>
+  <div><b>5</b><a href="software/" style="color:#9FC2E0">Open-source software packages</a></div>
   <div><b>WRF · 0.5 km</b>Operational forecasts for Barranquilla</div>
 </div></div>
 <div class="sponsors"><div class="wrap">
@@ -345,7 +345,7 @@ teda_methods = [
 ]
 mrows = ''.join(f'<tr><td><code>{c}</code></td><td>{d}</td><td>{r}</td></tr>' for c,d,r in teda_methods)
 sw = pagehead('Software', 'Open-source code from the lab. Every package is documented in a SoftwareX paper and lives on GitHub.', 'Software',
-  '<div><b>4</b>Packages</div><div><b>4</b>SoftwareX papers</div><div><b>10</b>Ensemble methods in TEDA</div>') + f"""
+  '<div><b>5</b>Packages</div><div><b>4</b>SoftwareX papers</div><div><b>10</b>Ensemble methods in TEDA</div>') + f"""
 <section style="padding:64px 0"><div class="wrap">
   <div class="feat" id="pyteda">
     <figure><picture><source srcset="../assets/img/figures/qg-model.webp" type="image/webp"><img src="../assets/img/figures/qg-model.jpg" alt="1.5-layer quasi-geostrophic model: potential vorticity and streamfunction"></picture><figcaption>1.5-layer quasi-geostrophic model on a 193 × 193 grid, one of the benchmark models: potential vorticity (left) and streamfunction (right).</figcaption></figure>
@@ -355,6 +355,17 @@ sw = pagehead('Software', 'Open-source code from the lab. Every package is docum
       <div class="meta">Nino-Ruiz, E. D. · SoftwareX 34, 102738 · 2026</div>
       <p>A web platform for interactive data assimilation benchmarking. Experiments run on the server and stream their output to the browser in real time, and every run is stored so it can be compared later. It builds on the TEDA code base and adds larger test models such as the quasi-geostrophic model shown here.</p>
       <p style="margin:0"><a class="btn primary" href="pyteda/">About PyTEDA-web</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/pyTEDA">GitHub</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1016/j.softx.2026.102738">Paper</a></p>
+    </div>
+  </div>
+
+  <div class="feat" id="swesphere" style="margin-top:72px">
+    <figure><picture><source srcset="../assets/img/figures/swesphere-globes.webp" type="image/webp"><img src="../assets/img/figures/swesphere-globes.jpg" alt="Shallow-water model on the sphere: zonal wind, meridional wind and depth anomaly of the two_jets regime"></picture><figcaption>The <code>two_jets</code> regime of swesphere: zonal wind, meridional wind, and the departure of the fluid depth from its zonal mean, drawn as relief.</figcaption></figure>
+    <div>
+      <span class="status">Model · Python · 2026</span>
+      <h3 style="margin-top:14px">swesphere</h3>
+      <div class="meta">Nino-Ruiz, E. D. · in preparation · 2026</div>
+      <p>Shallow-water equations on the rotating sphere: a small geophysical flow for numerical experiments, verified against the standard test cases and reproducible from a container. Three documented regimes, a state-vector interface any external program can drive, and a pluggable time integrator. About two seconds per model day on one core.</p>
+      <p style="margin:0"><a class="btn primary" href="swesphere/">About swesphere</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a></p>
     </div>
   </div>
 </div></section>
@@ -435,6 +446,86 @@ pyteda = f"""
 </div></section>
 """
 write('software/pyteda/index.html', shell('PyTEDA-web · AML-CS', pyteda, 'Software', depth=2))
+
+
+
+# swesphere dedicated page
+swe_regimes = [
+ ('waves','Rossby waves on a zonal flow, unforced','8.8 m (decaying)','42 m/s','quasi-linear; the filter is the only sink'),
+ ('one_jet','Galewsky jet at 45&deg;N + relaxation of the zonal mean','124 &plusmn; 13 m','76 m/s','stationary, fairly regular eddies in the north'),
+ ('two_jets','Galewsky jets at &plusmn;45&deg; + the same relaxation','156 &plusmn; 13 m','76 m/s','stationary irregular turbulence in both hemispheres'),
+]
+srows = ''.join(f'<tr><td><code>{n}</code></td><td>{w}</td><td>{e}</td><td>{u}</td><td>{d}</td></tr>' for n,w,e,u,d in swe_regimes)
+
+swesphere = f"""
+<div class="pagehead" style="padding-bottom:0"><div class="wrap" style="display:block">
+  <div class="crumb"><a href="../../">Home</a> / <a href="../">Software</a> / swesphere</div>
+  <h1>swesphere</h1>
+  <p style="max-width:62ch">Shallow-water equations on the rotating sphere: a geophysical flow small enough to experiment with, documented enough to compare against, and reproducible from a container.</p>
+  <div class="hero-media"><picture><source srcset="../../assets/img/figures/swesphere-globes.webp" type="image/webp"><img src="../../assets/img/figures/swesphere-globes.jpg" alt="Zonal wind, meridional wind and depth anomaly of the two_jets regime on the sphere"></picture></div>
+</div></div>
+
+<section style="padding-top:40px"><div class="wrap two" style="align-items:start">
+  <div class="prose">
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">Above: a state of the <code>two_jets</code> record. Zonal wind, meridional wind, and the departure of the depth from its zonal mean drawn as relief (exaggerated). The polar caps under the sponge are grey.</p>
+
+    <h2 style="margin-top:8px">What it is</h2>
+    <p>The shallow-water equations on a sphere are the smallest system that carries the ingredients of large-scale atmospheric flow: a balance relation between wind and mass, fast gravity waves alongside slow balanced motion, and barotropic instability that sustains turbulence. swesphere solves them with vector-invariant momentum equations and a flux-form continuity equation, on a regular latitude-longitude grid with an exact zonal derivative by FFT, second-order centred meridional differences and fourth-order Runge-Kutta stepping. Dissipation is an exponential filter in spherical harmonics plus a sponge on the wind at the polar caps.</p>
+    <p>At the default truncation the grid is 66 &times; 132 and the state has 26,136 variables, which integrates in about two seconds per model day on one core: small enough for hundreds of forecasts on a workstation, large enough to behave like the atmosphere.</p>
+
+    <h2>The interface</h2>
+    <p>The state is a plain vector <code>x = [u, v, h]</code> and the model is a function that advances it, so an external program drives it without knowing anything about the discretization.</p>
+    <pre><code>from swesphere import presets, climatology, diagnostics
+
+model, x0 = presets.two_jets()        # 66 x 132, dt = 120 s
+x1 = model.propagate(x0, [0.0, 6*3600.0])          # 6 h
+u, v, h = model.unpack(x1)            # or model.var_blocks
+mask = model.interior_mask()          # rows outside the polar sponge
+
+S = climatology.build_climatology(    # 200 states, 2 days apart
+        model, x0, spinup_days=40,
+        n_snapshots=200, every_days=2)
+scales, per_field = climatology.anomaly_scales(model, S)
+print(diagnostics.invariants(model, x1))   # mass, energy, enstrophy</code></pre>
+
+    <h2>Plugging in your own integrator</h2>
+    <p>The right-hand side is published and the time stepper is looked up in a registry, so a new scheme runs with the same grid, filter, sponge and forcing as the shipped Runge-Kutta, and is measured by the same experiments: order of convergence, conservation of the invariants, largest stable step, cost per model day and the eddy amplitude it sustains.</p>
+    <pre><code>from swesphere.integrators import INTEGRATORS
+
+def euler(rhs, u, v, h, dt):     # rhs(u,v,h) -&gt; tendencies
+    du, dv, dh = rhs(u, v, h)
+    return u + dt*du, v + dt*dv, h + dt*dh
+
+INTEGRATORS["euler"] = euler
+model, x0 = presets.two_jets(scheme="euler", dt=30.0)</code></pre>
+    <p><code>swesphere.dynamics.rhs(u, v, h, grid)</code> is the physics alone; <code>model.rhs(u, v, h)</code> adds the forcing of the preset.</p>
+
+    <h2>Three regimes</h2>
+    <p>Each preset is a function that returns a configured model and its initial state, so an experiment names its regime in one line. The statistics below were measured on 200-state records with the default settings.</p>
+    <table><thead><tr><th>Preset</th><th>What it is</th><th>Eddy std of <i>h</i></th><th>|U|max</th><th>Regime</th></tr></thead><tbody>{srows}</tbody></table>
+    <p class="fig"><picture><source srcset="../../assets/img/figures/swesphere-regimes.webp" type="image/webp"><img class="fit" src="../../assets/img/figures/swesphere-regimes.jpg" alt="The three regimes of swesphere on the sphere"></picture></p>
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">The three presets, same fields as above. Note the scales: the meridional wind and the depth anomaly of <code>waves</code> are an order of magnitude weaker than those of the forced presets.</p>
+
+    <h2>Verified, and its limits measured</h2>
+    <p>On the steady zonal flow of Williamson et al.\u2019s test case 2 the normalized <i>l</i><sub>2</sub> error of the depth after five days is 2.2&times;10<sup>-4</sup> at the default truncation and 5.5&times;10<sup>-5</sup> at twice the resolution: second order, as expected from the centred meridional differences. The Galewsky barotropic instability reproduces the published reference solution, with the global mass conserved to 10<sup>-6</sup> and the total energy to 10<sup>-4</sup> over ten days.</p>
+    <p>Two limits are documented rather than hidden. The polar sponge, not the discretization, dominates the error of the default configuration on tests whose flow extends to the poles. And because the filter acts every few steps rather than every few seconds, the eddy amplitude of a regime is set by the interval between filter applications, not by the time step: runs that share an interval and differ by a factor of six in the time step agree within the natural variability of the flow.</p>
+
+    <h2>Reproducing the experiments</h2>
+    <p>Each experiment is a Docker Compose service that writes its results as CSV after every case; the figures are regenerated from those files.</p>
+    <pre><code>docker compose build test
+docker compose run --rm test
+docker compose run -d verification   # independent of each other
+docker compose run -d stability
+docker compose run -d regimes
+docker compose run -d footprint      # after regimes
+docker compose run --rm figures      # after all</code></pre>
+
+    <p style="margin-top:28px"><a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a></p>
+  </div>
+  {facts([('Package','swesphere'),('Type','Model &middot; Python &middot; NumPy, SciPy, pyshtools'),('State','26,136 variables (66 &times; 132, three fields)'),('Cost','about 2 s per model day, one core'),('Regimes','waves, one_jet, two_jets'),('Author','Elias D. Nino-Ruiz'),('Code','github.com/enino84/swesphere'),('License','MIT')])}
+</div></section>
+"""
+write('software/swesphere/index.html', shell('swesphere &middot; AML-CS', swesphere, 'Software', depth=2))
 
 
 # ---------------------------------------------------------------- PEOPLE
