@@ -458,11 +458,11 @@ swe_regimes = [
 srows = ''.join(f'<tr><td><code>{n}</code></td><td>{w}</td><td>{e}</td><td>{u}</td><td>{d}</td></tr>' for n,w,e,u,d in swe_regimes)
 
 swesphere = f"""
-<div class="pagehead" style="padding-bottom:0"><div class="wrap" style="display:block">
+<div class="pagehead" style="padding-bottom:48px"><div class="wrap" style="display:block">
   <div class="crumb"><a href="../../">Home</a> / <a href="../">Software</a> / swesphere</div>
   <h1>swesphere</h1>
   <p style="max-width:62ch">Shallow-water equations on the rotating sphere: a geophysical flow small enough to experiment with, documented enough to compare against, and reproducible from a container.</p>
-  <div class="hero-media"><picture><source srcset="../../assets/img/figures/swesphere-globes.webp" type="image/webp"><img src="../../assets/img/figures/swesphere-globes.jpg" alt="Zonal wind, meridional wind and depth anomaly of the two_jets regime on the sphere"></picture></div>
+  <div class="hero-media" style="background:transparent;box-shadow:none;padding:0;border-radius:0;max-width:1060px"><picture><source srcset="../../assets/img/figures/swesphere-globes-dark.webp" type="image/webp"><img src="../../assets/img/figures/swesphere-globes-dark.png" alt="Zonal wind, meridional wind and depth anomaly of the two_jets regime on the sphere"></picture></div>
 </div></div>
 
 <section style="padding-top:40px"><div class="wrap two" style="align-items:start">
@@ -500,6 +500,12 @@ INTEGRATORS["euler"] = euler
 model, x0 = presets.two_jets(scheme="euler", dt=30.0)</code></pre>
     <p><code>swesphere.dynamics.rhs(u, v, h, grid)</code> is the physics alone; <code>model.rhs(u, v, h)</code> adds the forcing of the preset.</p>
 
+
+    <h2>API</h2>
+    <p>Everything is importable and callable directly; the Docker services are only how the experiments of the paper are reproduced. These are the entry points.</p>
+    <table><thead><tr><th>Call</th><th>What it gives you</th></tr></thead><tbody><tr><td><code>presets.waves()<br>presets.one_jet(tau_days=5, h0=1e4)<br>presets.two_jets(...)<br>presets.make(name, **overrides)</code></td><td>a configured model and its initial state, <code>(model, x0)</code>. Any keyword overrides the defaults: <code>LMAX</code>, <code>dt</code>, <code>filter_every</code>, <code>scheme</code>, <code>n_pole_rows</code>.</td></tr><tr><td><code>model.propagate(x0, [t0, t1])</code></td><td>integrate the state vector from <code>t0</code> to <code>t1</code> (seconds). <code>just_final_state=False</code> returns every step.</td></tr><tr><td><code>model.pack(u, v, h)<br>model.unpack(x)</code></td><td>between the three fields and the state vector.</td></tr><tr><td><code>model.var_blocks<br>model.field_size, model.dim<br>model.Nlat, model.Nlon</code></td><td>the slice of each field in the vector, and the sizes.</td></tr><tr><td><code>model.interior_mask()</code></td><td>boolean mask of the rows outside the polar sponge: the part of the domain meant to be used.</td></tr><tr><td><code>model.initial_condition(kind, seed=0, **kw)</code></td><td><code>'rossby'</code> (add <code>perturbed=True</code> for a seeded perturbation), <code>'tc2'</code>, <code>'galewsky'</code>.</td></tr><tr><td><code>model.rhs(u, v, h)<br>dynamics.rhs(u, v, h, grid)</code></td><td>the tendencies with and without the forcing of the preset.</td></tr><tr><td><code>dynamics.relative_vorticity(u, v, grid)<br>dynamics.divergence(u, v, grid)</code></td><td>diagnostics on the fields.</td></tr><tr><td><code>climatology.build_climatology(model, x0, spinup_days, n_snapshots, every_days)</code></td><td>a record of states as a <code>(n, dim)</code> array.</td></tr><tr><td><code>climatology.anomaly_scales(model, S)<br>climatology.lag_correlation(model, S, lag=1, field='h')</code></td><td>the scale of the departures from the record mean, and how fast the record decorrelates.</td></tr><tr><td><code>diagnostics.invariants(model, x, interior=False)</code></td><td>global mass, total energy and potential enstrophy.</td></tr><tr><td><code>diagnostics.error_norms(model, x, x_ref, field='h')</code></td><td>normalized l1, l2 and l-infinity errors.</td></tr><tr><td><code>INTEGRATORS[name] = stepper</code></td><td>register a time-stepping scheme; pass <code>scheme=name</code> to a preset.</td></tr></tbody></table>
+    <p>The state vector is <code>x = [u, v, h]</code>, each field flattened row-major from north to south on a grid of <code>2(LMAX+1)</code> by <code>4(LMAX+1)</code> points. Time is in seconds. Depths are in metres, winds in metres per second.</p>
+
     <h2>Three regimes</h2>
     <p>Each preset is a function that returns a configured model and its initial state, so an experiment names its regime in one line. The statistics below were measured on 200-state records with the default settings.</p>
     <table><thead><tr><th>Preset</th><th>What it is</th><th>Eddy std of <i>h</i></th><th>|U|max</th><th>Regime</th></tr></thead><tbody>{srows}</tbody></table>
@@ -524,6 +530,90 @@ docker compose run --rm figures      # after all</code></pre>
   </div>
   {facts([('Package','swesphere'),('Type','Model &middot; Python &middot; NumPy, SciPy, pyshtools'),('State','26,136 variables (66 &times; 132, three fields)'),('Cost','about 2 s per model day, one core'),('Regimes','waves, one_jet, two_jets'),('Author','Elias D. Nino-Ruiz'),('Code','github.com/enino84/swesphere'),('License','MIT')])}
 </div></section>
+
+<section class="tint"><div class="wrap">
+  <div class="sec-head"><h2>How it is put together</h2><p>One object composes five small modules and exposes the state as a vector. Presets configure it, helper modules measure it, and anything outside drives it through the same three calls.</p></div>
+  <div style="background:#fff;border:1px solid var(--rule);border-radius:14px;padding:28px 24px;overflow-x:auto">
+  <svg viewBox="0 0 980 470" width="100%" style="min-width:680px;display:block" xmlns="http://www.w3.org/2000/svg" font-family="Sora, system-ui, sans-serif" role="img" aria-label="Architecture of swesphere">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#1F5FA8"/>
+      </marker>
+      <style>
+        .bx{{fill:#fff;stroke:#D6E3EE;stroke-width:1.5;rx:10}}
+        .t{{font-size:15px;font-weight:700;fill:#0F2B4C}}
+        .s{{font-size:11.5px;fill:#5B6F84}}
+        .c{{font-size:11.5px;fill:#1B3A5C;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}}
+        .ln{{stroke:#1F5FA8;stroke-width:1.6;fill:none;marker-end:url(#ar)}}
+      </style>
+    </defs>
+
+    <rect x="20" y="16" width="940" height="64" rx="10" fill="#0F2B4C"/>
+    <text x="490" y="42" class="t" style="fill:#fff" text-anchor="middle">Anything that drives the model</text>
+    <text x="490" y="63" class="s" style="fill:#9FC2E0" text-anchor="middle">assimilation libraries (the PyTEDA adapter) &#183; your own scripts and notebooks &#183; the experiments of the paper</text>
+
+    <rect x="20" y="132" width="210" height="104" class="bx"/>
+    <text x="125" y="159" class="t" text-anchor="middle">presets</text>
+    <text x="125" y="183" class="c" text-anchor="middle">waves()  one_jet()</text>
+    <text x="125" y="201" class="c" text-anchor="middle">two_jets()  make()</text>
+    <text x="125" y="223" class="s" text-anchor="middle">&#8594; (model, x0)</text>
+
+    <rect x="282" y="120" width="416" height="128" rx="10" fill="#EAF3FA" stroke="#4BA2DE" stroke-width="1.8"/>
+    <text x="490" y="149" class="t" text-anchor="middle">SWEModel</text>
+    <text x="490" y="175" class="c" text-anchor="middle">x = [u, v, h]</text>
+    <text x="490" y="196" class="c" text-anchor="middle">propagate(x, [t0, t1])</text>
+    <text x="490" y="217" class="c" text-anchor="middle">pack / unpack / var_blocks</text>
+    <text x="490" y="236" class="c" text-anchor="middle">interior_mask()</text>
+
+    <rect x="750" y="132" width="210" height="104" class="bx"/>
+    <text x="855" y="159" class="t" text-anchor="middle">measuring it</text>
+    <text x="855" y="183" class="c" text-anchor="middle">climatology</text>
+    <text x="855" y="201" class="c" text-anchor="middle">diagnostics</text>
+    <text x="855" y="223" class="s" text-anchor="middle">records, scales, invariants</text>
+
+    <rect x="20" y="320" width="176" height="126" class="bx"/>
+    <text x="108" y="347" class="t" text-anchor="middle">grid</text>
+    <text x="108" y="372" class="s" text-anchor="middle">lat-lon, exact</text>
+    <text x="108" y="390" class="s" text-anchor="middle">zonal FFT,</text>
+    <text x="108" y="408" class="s" text-anchor="middle">centred d/d&#966;</text>
+
+    <rect x="214" y="320" width="176" height="126" class="bx"/>
+    <text x="302" y="347" class="t" text-anchor="middle">dynamics</text>
+    <text x="302" y="372" class="s" text-anchor="middle">vector-invariant</text>
+    <text x="302" y="390" class="s" text-anchor="middle">momentum,</text>
+    <text x="302" y="408" class="s" text-anchor="middle">flux-form continuity</text>
+
+    <rect x="408" y="320" width="176" height="126" rx="10" fill="#FFF8EC" stroke="#F0A92B" stroke-width="1.6"/>
+    <text x="496" y="347" class="t" text-anchor="middle">integrators</text>
+    <text x="496" y="372" class="s" text-anchor="middle">registry of steppers</text>
+    <text x="496" y="390" class="s" text-anchor="middle">RK4 shipped,</text>
+    <text x="496" y="408" class="s" text-anchor="middle">yours plugs in here</text>
+
+    <rect x="602" y="320" width="176" height="126" class="bx"/>
+    <text x="690" y="347" class="t" text-anchor="middle">dissipation</text>
+    <text x="690" y="372" class="s" text-anchor="middle">spectral filter</text>
+    <text x="690" y="390" class="s" text-anchor="middle">(pyshtools),</text>
+    <text x="690" y="408" class="s" text-anchor="middle">polar sponge</text>
+
+    <rect x="796" y="320" width="164" height="126" class="bx"/>
+    <text x="878" y="347" class="t" text-anchor="middle">forcing</text>
+    <text x="878" y="372" class="s" text-anchor="middle">relaxation of the</text>
+    <text x="878" y="390" class="s" text-anchor="middle">zonal mean</text>
+    <text x="878" y="408" class="s" text-anchor="middle">(optional)</text>
+
+    <path class="ln" d="M 490 120 L 490 92"/>
+    <path class="ln" d="M 230 184 L 276 184"/>
+    <path class="ln" d="M 750 184 L 704 184"/>
+    <path class="ln" d="M 108 320 L 108 292 L 470 292 L 470 254"/>
+    <path class="ln" d="M 302 320 L 302 292"/>
+    <path class="ln" d="M 496 320 L 496 254"/>
+    <path class="ln" d="M 690 320 L 690 292 L 512 292 L 512 254"/>
+    <path class="ln" d="M 878 320 L 878 292 L 530 292 L 530 254"/>
+  </svg>
+  </div>
+  <p style="font-family:var(--display);font-size:13px;color:var(--muted);margin-top:14px">The amber box is the one you are meant to replace: register a stepper in <code>INTEGRATORS</code> and it runs with the same grid, dissipation and forcing.</p>
+</div></section>
+
 """
 write('software/swesphere/index.html', shell('swesphere &middot; AML-CS', swesphere, 'Software', depth=2))
 

@@ -1,0 +1,23 @@
+swesphere en el sitio AML-CS
+============================
+
+Copia todo sobre la raíz del repo AML-CS.github.io y haz commit. Los .html ya están generados.
+
+  build.py                                        modificado (tarjeta + página de swesphere, contador 4 -> 5, API)
+  index.html, software/index.html                 regenerados
+  software/swesphere/index.html                   nueva página
+  assets/img/figures/swesphere-globes.jpg/.webp        para la tarjeta (fondo blanco)
+  assets/img/figures/swesphere-globes-dark.png/.webp   para el hero (fondo transparente, texto claro)
+  assets/img/figures/swesphere-regimes.jpg/.webp       los tres regímenes
+
+La página incluye un diagrama de la estructura del modelo en SVG inline (dentro de build.py,
+sección "How it is put together"), con la paleta del sitio: se escala sin perder nitidez y no
+necesita archivo de imagen.
+
+El hero ya no usa el recuadro blanco de .hero-media: lleva
+  style="background:transparent;box-shadow:none;padding:0;border-radius:0"
+y la imagen transparente, así las esferas quedan sobre el azul.
+
+Antes de publicar:
+  - El enlace de GitHub apunta a github.com/enino84/swesphere (dos sitios en build.py).
+  - La tarjeta dice "in preparation · 2026"; al salir el artículo, añade DOI y botón "Paper".
