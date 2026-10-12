@@ -371,9 +371,9 @@ sw = pagehead('Software', 'Open-source code from the lab, each package documente
     <div>
       <span class="status">Model · Python · 2026</span>
       <h3 style="margin-top:14px">QG-Python</h3>
-      <div class="meta">Nino-Ruiz, E. D. · Geoscience Data Journal 13, e70107 · 2026</div>
-      <p>A reproducible Python port of the 1.5-layer quasi-geostrophic model QG-C, with a direct sparse Helmholtz solver, three time integrators (RK4, Leapfrog with Robert-Asselin and with RAW filters) and diagnostics for the linearized operator, its eigenspectrum and the maximum Lyapunov exponent. Comes with a published stability and filter sensitivity dataset.</p>
-      <p style="margin:0"><a class="btn primary" href="qg-python/">About QG-Python</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/qg-leapfrog-stability">GitHub</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1002/gdj3.70107">Paper</a></p>
+      <div class="meta">Nino-Ruiz, E. D. · Geoscience Data Journal 13, e70107 · 2026 · <code>pip install qg-python</code></div>
+      <p>A reproducible Python port of the 1.5-layer quasi-geostrophic model QG-C, with a direct sparse Helmholtz solver, RK4, Dormand-Prince and Leapfrog (RA and RAW filters) integrators under one API, and diagnostics for the linearized operator, its eigenspectrum and the maximum Lyapunov exponent. Comes with a published stability and filter sensitivity dataset.</p>
+      <p style="margin:0"><a class="btn primary" href="qg-python/">About QG-Python</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/qg-leapfrog-stability">GitHub</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://pypi.org/project/qg-python/">PyPI</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1002/gdj3.70107">Paper</a></p>
     </div>
   </div>
 
@@ -535,21 +535,31 @@ write('software/pyteda/index.html', shell('PyTEDA-web · AML-CS', pyteda, 'Softw
 
 # QG-Python dedicated page
 qg_api = [
- ('QGModel(config)','build a model from a YAML configuration file; assembles and factorizes the Helmholtz operator once'),
- ('model.rhs(q)','the right-hand side F(q) of the potential vorticity equation, as an array shaped like q'),
- ('model.step_rk4(q, dt)','one fourth-order Runge-Kutta step'),
- ('model.step_lf_ra(q_prev, q, dt, alpha)','one Leapfrog step with the Robert-Asselin filter of strength alpha'),
- ('model.step_lf_raw(q_prev, q, dt, alpha, beta)','one Leapfrog step with the Robert-Asselin-Williams filter'),
- ('model.linearize(q_eq, eps)','sparse approximation of the Jacobian of F at q_eq by centred finite differences'),
- ('model.eigvals(q_eq, k=200)','the k leading eigenvalues of the Jacobian via ARPACK'),
- ('model.lyapunov_benettin(q_eq, T, n_renorm)','the maximum Lyapunov exponent by the Benettin algorithm, with its convergence trace'),
+ ('QGParams(...)','all parameters as a dataclass: grid (<code>mrefin</code>, 6 gives 97 &times; 97), physics (<code>rkb, rkh, rkh2, f, r, a, k</code>), time integration (<code>scheme, dt, tend, dtout</code>), Leapfrog filter (<code>ra_alpha, raw_filter</code>) and output (<code>outfname, save_q</code>). Defaults are those of QG-C.'),
+ ('QGParams.from_file("run.prm")','the same parameters read from a QG-C style parameter file'),
+ ('QGModel(prm)','builds the model: assembles the Helmholtz operator once and factorizes it (SuperLU)'),
+ ('model.run(ic, **kw)','integrates from <code>t = 0</code> to <code>tend</code>, saves a record every <code>dtout</code> to <code>outfname</code> (.npz, or .nc when netCDF4 is installed) and returns <code>(psi, q)</code>'),
+ ('ic = "zero" | "fourier" | "vortex" | "restart"','initial condition: rest, a seeded Fourier perturbation (<code>amplitude, kmax, seed</code>), a vortex, or a record of a previous run (<code>fname, record</code>)'),
+ ('scheme = "rk4" | "dp5" | "leapfrog" | "order2" | "order1"','the time integrator; with <code>leapfrog</code>, <code>ra_alpha</code> sets the filter strength and <code>raw_filter=True</code> switches from RA to RAW'),
+ ('model.set_ic(kind, **kw)','set the state without running, for custom loops'),
+ ('model.psi, model.q, model.t','the current streamfunction, potential vorticity and time'),
+ ('qg-python --help','the same model from the command line; this is what <code>run_all.sh</code> calls'),
 ]
 qrow = ''.join(f'<tr><td><code>{a}</code></td><td>{d}</td></tr>' for a, d in qg_api)
+qg_diag = [
+ ('analysis/jacobian_spectrum.py','builds the sparse Jacobian of the right-hand side at an equilibrium state by finite differences and computes its leading eigenvalues with ARPACK; compares them with the von Neumann bounds'),
+ ('analysis/stability_regions.py','draws the stability regions of RK4, dp5 and Leapfrog in the <i>z</i>-plane and overlays the scaled eigenvalues'),
+ ('analysis/lyapunov.py','the Benettin algorithm: maximum Lyapunov exponent, its convergence trace and the Lyapunov time'),
+ ('analysis/uncertainty.py','kinetic energy, enstrophy, energy spectra and KL divergences across schemes'),
+ ('analysis/plot_alpha_sensitivity.py','the filter sensitivity sweep over the RA strength &alpha;'),
+ ('qg_viewer.py','interactive viewer of the .npz records (needs matplotlib)'),
+]
+drow = ''.join(f'<tr><td><code>{a}</code></td><td>{d}</td></tr>' for a, d in qg_diag)
 qg = f"""
 <div class="pagehead"><div class="wrap" style="display:block">
   <div class="crumb"><a href="../../">Home</a> / <a href="../">Software</a> / QG-Python</div>
   <h1>QG-Python</h1>
-  <p style="max-width:62ch">A reproducible 1.5-layer quasi-geostrophic model in Python: a direct sparse Helmholtz solver, three time integrators under one API, and the diagnostics that tell you how stable and how predictable the flow is.</p>
+  <p style="max-width:62ch">A reproducible 1.5-layer quasi-geostrophic model in Python: a direct sparse Helmholtz solver, RK4, Dormand-Prince and Leapfrog integrators under one API, and the diagnostics that tell you how stable and how predictable the flow is.</p>
 </div></div>
 
 <section style="padding:56px 0 0"><div class="wrap">
@@ -557,10 +567,10 @@ qg = f"""
 </div></section>
 
 <section style="padding-top:40px"><div class="wrap"><div class="prose" style="max-width:76ch;margin:0 auto">
-
+    <p><span class="install">pip install qg-python</span></p>
     <h2 style="margin-top:8px">What it is</h2>
     <p>The 1.5-layer quasi-geostrophic model is the classic testbed for mesoscale ocean variability, Rossby waves, the inverse energy cascade and ensemble data assimilation. QG-Python is a faithful port of the QG-C model of Sakov (2024) in which the legacy Fortran multi-grid Helmholtz solver is replaced by a direct sparse LU factorization (SuperLU through SciPy). The streamfunction inversion is then exact to machine precision and deterministic, so the only numerical error left is the one introduced by the time integrator, which is exactly what the package is built to measure.</p>
-    <p>Three integrators are exposed under a single API: the classical fourth-order Runge-Kutta scheme, the Leapfrog scheme with the Robert-Asselin (RA) filter, and the Leapfrog scheme with the Robert-Asselin-Williams (RAW) filter. Diagnostic modules compute the linearized operator, its leading eigenspectrum and the maximum Lyapunov exponent. The default configuration is the 97 &times; 97 grid of QG-C (mrefin = 6, 9,025 interior degrees of freedom), unchanged, so results are comparable with the body of prior work that uses QG-C as a dynamical core.</p>
+    <p>The integrators are exposed under a single API: the classical fourth-order Runge-Kutta scheme, the Dormand-Prince scheme, and the Leapfrog scheme with the Robert-Asselin (RA) or the Robert-Asselin-Williams (RAW) filter. Analysis modules compute the linearized operator, its leading eigenspectrum and the maximum Lyapunov exponent. The default configuration is the 97 &times; 97 grid of QG-C (mrefin = 6, 9,025 interior degrees of freedom), unchanged, so results are comparable with the body of prior work that uses QG-C as a dynamical core.</p>
 
     <h2>What the dataset says</h2>
     <ul>
@@ -571,32 +581,35 @@ qg = f"""
 </div></div></section>
 
 <section class="tint"><div class="wrap">
-  <div class="sec-head"><h2>API</h2><p>A small package on top of NumPy and SciPy. Configuration (resolution, physical parameters, integrator, time step, horizon, output cadence) lives in a YAML file.</p></div>
+  <div class="sec-head"><h2>API</h2><p>One module, <code>qg_model</code>, on top of NumPy and SciPy. A run is a parameter object, a model and one call.</p></div>
   <div class="prose" style="max-width:none">
+    <pre><code>from qg_model import QGModel, QGParams
+
+prm = QGParams(mrefin=6,                 # 97 x 97
+               scheme='leapfrog', dt=1.0, tend=110000, dtout=40,
+               ra_alpha=0.1, raw_filter=True,
+               outfname='qg_lf_raw.npz', save_q=True)
+
+model = QGModel(prm)                     # factorizes the Helmholtz operator once
+psi, q = model.run('restart', fname='qg_fourier.npz', record=-1)</code></pre>
     <table class="api"><thead><tr><th>Call</th><th>What it gives you</th></tr></thead><tbody>{qrow}</tbody></table>
-    <pre><code>from qg_python import QGModel
-
-model = QGModel("config/mrefin6.yaml")     # 97 x 97, factorizes the Helmholtz operator
-q = model.restart("data/q_eq_mrefin6.npz") # equilibrium state, t = 1e5
-for _ in range(1000):
-    q = model.step_rk4(q, dt=1.0)
-
-J = model.linearize(q, eps=1e-6)           # sparse Jacobian at the equilibrium
-lam = model.eigvals(q, k=200)              # leading eigenvalues (ARPACK)
-sigma1, trace = model.lyapunov_benettin(q, T=2000, n_renorm=200)</code></pre>
+    <h3>Diagnostics</h3>
+    <p>The stability and predictability analysis of the paper lives in the <code>analysis/</code> scripts of the repository, which import the same model.</p>
+    <table class="api"><thead><tr><th>Script</th><th>What it computes</th></tr></thead><tbody>{drow}</tbody></table>
   </div>
 </div></section>
 
 <section><div class="wrap"><div class="prose" style="max-width:76ch;margin:0 auto">
     <h2 style="margin-top:0">Getting it</h2>
-    <pre><code>git clone https://github.com/enino84/qg-leapfrog-stability
-cd qg-leapfrog-stability
-pip install -r requirements.txt</code></pre>
-    <p>The Zenodo archive is the authoritative citation target: it holds the source code and the simulation outputs (equilibrium restart fields at both resolutions, eigenvalue clouds, the Benettin trace and the time-resolved diagnostics of every run). The GitHub mirror tracks the source, the shell drivers and the plain-text summaries.</p>
+    <pre><code>pip install qg-python            # the model: numpy and scipy only
+pip install "qg-python[all]"     # plus matplotlib (viewer) and netCDF4 (.nc output)</code></pre>
+    <p>The package installs the <code>qg_model</code> module and the <code>qg-python</code> command. The experiments of the paper, the analysis scripts and the reproducer live in the repository; the Zenodo archive is the authoritative citation target and also holds the simulation outputs (equilibrium restart fields at both resolutions, eigenvalue clouds, the Benettin trace and the time-resolved diagnostics of every run).</p>
 
     <h2>Reproducing the paper</h2>
     <p>One command regenerates every experiment: the spin-up from rest, the RK4 reference run, the LF + RA and LF + RAW runs, the &alpha; sensitivity sweep over {{0.05, 0.10, 0.20, 0.40}}, the eigenspectra at both resolutions, the Lyapunov estimate and all the figures. About 4 to 5 hours on one laptop core, no GPU, bitwise reproducible given the same NumPy, SciPy and ARPACK versions. Each step can also be run on its own.</p>
-    <pre><code>bash run_all.sh</code></pre>
+    <pre><code>git clone https://github.com/enino84/qg-leapfrog-stability
+cd qg-leapfrog-stability
+bash run_all.sh</code></pre>
 
     <h2>Paper and how to cite</h2>
     <p>If you use QG-Python or the dataset, please cite the Data Services Article and the Zenodo record.</p>
@@ -616,8 +629,8 @@ pip install -r requirements.txt</code></pre>
 }}</code></pre>
     </div>
   </div>
-  <div style="max-width:76ch;margin:44px auto 0">{facts([('Package','QG-Python'),('Type','Model · Python · NumPy, SciPy (SuperLU, ARPACK)'),('Default grid','97 &times; 97 (mrefin = 6), 9,025 interior points'),('Integrators','RK4 · Leapfrog + RA · Leapfrog + RAW'),('Diagnostics','Jacobian, eigenspectrum, Lyapunov exponent'),('Paper','Geoscience Data Journal 13, e70107 (2026)'),('Dataset','Zenodo 10.5281/zenodo.22168803'),('Author','Elias D. Nino-Ruiz'),('Code','github.com/enino84/qg-leapfrog-stability'),('License','MIT (code) · CC-BY 4.0 (data)')])}</div>
-  <p style="max-width:76ch;margin:28px auto 0"><a class="btn dark" href="https://github.com/enino84/qg-leapfrog-stability">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1002/gdj3.70107">Paper</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.5281/zenodo.22168803">Zenodo</a></p>
+  <div style="max-width:76ch;margin:44px auto 0">{facts([('Package','qg-python 1.0.0 on PyPI · module <code>qg_model</code>'),('Type','Model · Python · NumPy, SciPy (SuperLU, ARPACK)'),('Default grid','97 &times; 97 (mrefin = 6), 9,025 interior points'),('Integrators','RK4 · Dormand-Prince · Leapfrog + RA · Leapfrog + RAW'),('Diagnostics','Jacobian, eigenspectrum, Lyapunov exponent'),('Paper','Geoscience Data Journal 13, e70107 (2026)'),('Dataset','Zenodo 10.5281/zenodo.22168803'),('Author','Elias D. Nino-Ruiz'),('Code','github.com/enino84/qg-leapfrog-stability'),('License','MIT (code) · CC-BY 4.0 (data)')])}</div>
+  <p style="max-width:76ch;margin:28px auto 0"><a class="btn dark" href="https://github.com/enino84/qg-leapfrog-stability">GitHub</a> &nbsp; <a class="btn primary" href="https://pypi.org/project/qg-python/">PyPI</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1002/gdj3.70107">Paper</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.5281/zenodo.22168803">Zenodo</a></p>
 </div></section>
 """
 write('software/qg-python/index.html', shell('QG-Python · AML-CS', qg, 'Software', depth=2))
