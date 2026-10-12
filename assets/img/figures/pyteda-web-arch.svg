@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 520" font-family="Sora, system-ui, sans-serif" role="img" aria-label="Architecture of PyTEDA-web">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4BA2DE"/></marker>
+    <marker id="w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#F0A92B"/></marker>
+    <style>
+      .bx{fill:#fff;stroke:#D6E3EE;stroke-width:1.5}
+      .t{font-size:17px;font-weight:700;fill:#0F2B4C}
+      .s{font-size:12px;fill:#5B6F84}
+      .c{font-size:12px;fill:#1B3A5C;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+      .ln{stroke:#4BA2DE;stroke-width:2;fill:none;marker-end:url(#a)}
+      .ln2{stroke:#F0A92B;stroke-width:2;fill:none;marker-end:url(#w);stroke-dasharray:6 5}
+      .lbl{font-size:11.5px;fill:#9FC2E0}
+    </style>
+  </defs>
+
+  <!-- browser -->
+  <rect x="20" y="30" width="300" height="150" rx="12" class="bx"/>
+  <rect x="20" y="30" width="300" height="30" rx="12" fill="#EAF3FA"/>
+  <circle cx="40" cy="45" r="5" fill="#D6E3EE"/><circle cx="56" cy="45" r="5" fill="#D6E3EE"/><circle cx="72" cy="45" r="5" fill="#D6E3EE"/>
+  <text x="170" y="86" class="t" text-anchor="middle">Browser</text>
+  <text x="170" y="108" class="s" text-anchor="middle">React 18 + Vite, Plotly.js charts</text>
+  <text x="170" y="126" class="s" text-anchor="middle">served by Nginx</text>
+  <polyline points="40,165 70,150 100,158 130,140 160,146 190,130 220,138 250,120 280,128 300,112" fill="none" stroke="#4BA2DE" stroke-width="2"/>
+  <polyline points="40,170 70,162 100,166 130,158 160,162 190,156 220,160 250,152 280,156 300,150" fill="none" stroke="#F0A92B" stroke-width="2"/>
+
+  <!-- backend -->
+  <rect x="380" y="30" width="300" height="150" rx="12" fill="#EAF3FA" stroke="#4BA2DE" stroke-width="2"/>
+  <text x="530" y="70" class="t" text-anchor="middle">FastAPI back end</text>
+  <text x="530" y="96" class="c" text-anchor="middle">POST /api/runs</text>
+  <text x="530" y="116" class="c" text-anchor="middle">GET /api/runs/{id}/stream</text>
+  <text x="530" y="136" class="c" text-anchor="middle">GET /api/runs/{id}/csv</text>
+  <text x="530" y="162" class="s" text-anchor="middle">Server-Sent Events while a run is going</text>
+
+  <!-- database -->
+  <rect x="740" y="30" width="300" height="150" rx="12" class="bx"/>
+  <ellipse cx="890" cy="62" rx="60" ry="12" fill="#EAF3FA" stroke="#D6E3EE"/>
+  <text x="890" y="104" class="t" text-anchor="middle">PostgreSQL</text>
+  <text x="890" y="128" class="s" text-anchor="middle">runs, method instances, results</text>
+  <text x="890" y="146" class="s" text-anchor="middle">every experiment is kept</text>
+  <text x="890" y="164" class="s" text-anchor="middle">and can be reopened or compared</text>
+
+  <!-- TEDA -->
+  <rect x="380" y="260" width="300" height="130" rx="12" fill="#0F2B4C"/>
+  <text x="530" y="298" class="t" style="fill:#fff" text-anchor="middle">TEDA</text>
+  <text x="530" y="320" class="c" style="fill:#D7E6F4" text-anchor="middle">pip install pyteda</text>
+  <text x="530" y="344" class="s" style="fill:#9FC2E0" text-anchor="middle">EnKF, EnSRF, ETKF, LETKF, LEnKF,</text>
+  <text x="530" y="362" class="s" style="fill:#9FC2E0" text-anchor="middle">modified Cholesky, shrinkage, B-localization</text>
+  <text x="530" y="380" class="s" style="fill:#9FC2E0" text-anchor="middle">+ the Lorenz-96 model</text>
+
+  <!-- external models -->
+  <rect x="20" y="420" width="300" height="80" rx="12" fill="#FFF8EC" stroke="#F0A92B" stroke-width="1.8"/>
+  <text x="170" y="452" class="t" text-anchor="middle">QG-Python</text>
+  <text x="170" y="474" class="s" text-anchor="middle">1.5-layer quasi-geostrophic model</text>
+  <text x="170" y="490" class="s" text-anchor="middle">97 × 97, RK4 / Leapfrog</text>
+
+  <rect x="740" y="420" width="300" height="80" rx="12" fill="#FFF8EC" stroke="#F0A92B" stroke-width="1.8"/>
+  <text x="890" y="452" class="t" text-anchor="middle">swesphere</text>
+  <text x="890" y="474" class="s" text-anchor="middle">shallow water on the sphere</text>
+  <text x="890" y="490" class="s" text-anchor="middle">66 × 132, three fields</text>
+
+  <rect x="380" y="420" width="300" height="80" rx="12" fill="#FFF8EC" stroke="#F0A92B" stroke-width="1.8" stroke-dasharray="6 5"/>
+  <text x="530" y="452" class="t" text-anchor="middle">your model</text>
+  <text x="530" y="474" class="c" text-anchor="middle">x  ·  propagate(x, [t0, t1])</text>
+  <text x="530" y="490" class="s" text-anchor="middle">same interface, same filters</text>
+
+  <!-- arrows -->
+  <path class="ln" d="M320 95 L372 95"/>
+  <path class="ln" d="M372 125 L320 125"/>
+  <text x="346" y="86" class="lbl" text-anchor="middle">run</text>
+  <text x="346" y="146" class="lbl" text-anchor="middle">stream</text>
+  <path class="ln" d="M680 105 L732 105"/>
+  <path class="ln" d="M530 180 L530 252"/>
+  <text x="548" y="222" class="lbl">executes with</text>
+  <path class="ln2" d="M170 420 L170 325 L372 325"/>
+  <path class="ln2" d="M890 420 L890 325 L688 325"/>
+  <path class="ln2" d="M530 420 L530 398"/>
+  <text x="150" y="380" class="lbl">model package</text>
+  <text x="818" y="380" class="lbl">model package</text>
+</svg>

@@ -14,22 +14,33 @@
 <body>
 <header class="site"><div class="wrap nav">
   <a href="../"><img class="logo" src="../assets/img/logo.png" alt="AML-CS: Applied Math and Computer Science Lab"></a>
-  <nav aria-label="Main"><ul><li><a href="../">Home</a></li><li><a href="../#research">Research</a></li><li><a href="../projects/">Projects</a></li><li><a href="../publications/">Publications</a></li><li><a href="../software/" aria-current="page">Software</a></li><li><a href="../people/">People</a></li><li><a href="../talks/">Talks & events</a></li><li><a href="../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <nav aria-label="Main"><ul><li><a href="../">Home</a></li><li><a href="../#research">Research</a></li><li><a href="../projects/">Projects</a></li><li><a href="../publications/">Publications</a></li><li class="has-sub"><a href="../software/" aria-current="page">Software</a><ul class="sub"><li><a href="../software/pyteda/">PyTEDA-web</a></li><li><a href="../software/qg-python/">QG-Python</a></li><li><a href="../software/swesphere/">swesphere</a></li><li><a href="../software/#teda">TEDA</a></li></ul></li><li><a href="../people/">People</a></li><li><a href="../talks/">Talks & events</a></li><li><a href="../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
   <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
 </div></header>
 <div class="pagehead"><div class="wrap">
-  <div><div class="crumb"><a href="../">Home</a> / Software</div><h1>Software</h1><p>Open-source code from the lab. Every package is documented in a SoftwareX paper and lives on GitHub.</p></div>
-  <div class="counts"><div><b>5</b>Packages</div><div><b>4</b>SoftwareX papers</div><div><b>10</b>Ensemble methods in TEDA</div></div>
+  <div><div class="crumb"><a href="../">Home</a> / Software</div><h1>Software</h1><p>Open-source code from the lab, each package documented in a peer-reviewed paper. If you use it, please cite the paper: every page below gives the reference.</p></div>
+  <div class="counts"><div><b>6</b>Packages</div><div><b>6</b>Papers</div><div><b>10</b>Ensemble methods in TEDA</div></div>
 </div></div>
 <section style="padding:64px 0"><div class="wrap">
   <div class="feat" id="pyteda">
-    <figure><picture><source srcset="../assets/img/figures/qg-model.webp" type="image/webp"><img src="../assets/img/figures/qg-model.jpg" alt="1.5-layer quasi-geostrophic model: potential vorticity and streamfunction"></picture><figcaption>1.5-layer quasi-geostrophic model on a 193 × 193 grid, one of the benchmark models: potential vorticity (left) and streamfunction (right).</figcaption></figure>
+    <figure style="background:var(--navy);border-color:var(--navy)"><img src="../assets/img/figures/pyteda-web-arch.svg" alt="Architecture of PyTEDA-web: React front end, FastAPI back end, PostgreSQL, and TEDA with external models"><figcaption style="color:#9FC2E0">PyTEDA-web: a React front end, a FastAPI back end that streams results, a PostgreSQL store, and TEDA doing the assimilation with Lorenz-96 built in and QG-Python and swesphere as external models.</figcaption></figure>
     <div>
-      <span class="status">Benchmarking platform · FastAPI · 2026</span>
+      <span class="status">Web platform · React + FastAPI · 2026</span>
       <h3 style="margin-top:14px">PyTEDA-web</h3>
       <div class="meta">Nino-Ruiz, E. D. · SoftwareX 34, 102738 · 2026</div>
-      <p>A web platform for interactive data assimilation benchmarking. Experiments run on the server and stream their output to the browser in real time, and every run is stored so it can be compared later. It builds on the TEDA code base and adds larger test models such as the quasi-geostrophic model shown here.</p>
-      <p style="margin:0"><a class="btn primary" href="pyteda/">About PyTEDA-web</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/pyTEDA">GitHub</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1016/j.softx.2026.102738">Paper</a></p>
+      <p>The web interface of TEDA. Configure an ensemble data assimilation experiment in the browser, launch it, watch the error curves arrive in real time, and keep every run in a database so methods can be compared later or exported as CSV.</p>
+      <p style="margin:0"><a class="btn primary" href="pyteda/">About PyTEDA-web</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/pyteda-web">GitHub</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1016/j.softx.2026.102738">Paper</a></p>
+    </div>
+  </div>
+
+  <div class="feat" id="qg-python" style="margin-top:72px">
+    <figure><picture><source srcset="../assets/img/figures/qg-model.webp" type="image/webp"><img src="../assets/img/figures/qg-model.jpg" alt="1.5-layer quasi-geostrophic model: potential vorticity and streamfunction"></picture><figcaption>QG-Python running the 1.5-layer quasi-geostrophic model on a 193 × 193 grid: potential vorticity (left) and streamfunction (right).</figcaption></figure>
+    <div>
+      <span class="status">Model · Python · 2026</span>
+      <h3 style="margin-top:14px">QG-Python</h3>
+      <div class="meta">Nino-Ruiz, E. D. · Geoscience Data Journal 13, e70107 · 2026</div>
+      <p>A reproducible Python port of the 1.5-layer quasi-geostrophic model QG-C, with a direct sparse Helmholtz solver, three time integrators (RK4, Leapfrog with Robert-Asselin and with RAW filters) and diagnostics for the linearized operator, its eigenspectrum and the maximum Lyapunov exponent. Comes with a published stability and filter sensitivity dataset.</p>
+      <p style="margin:0"><a class="btn primary" href="qg-python/">About QG-Python</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/qg-leapfrog-stability">GitHub</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1002/gdj3.70107">Paper</a></p>
     </div>
   </div>
 
@@ -38,15 +49,15 @@
     <div>
       <span class="status">Model · Python · 2026</span>
       <h3 style="margin-top:14px">swesphere</h3>
-      <div class="meta">Nino-Ruiz, E. D. · in preparation · 2026</div>
+      <div class="meta">Nino-Ruiz, E. D. · SoftwareX, submitted · 2026 · <code>pip install swesphere</code></div>
       <p>Shallow-water equations on the rotating sphere: a small geophysical flow for numerical experiments, verified against the standard test cases and reproducible from a container. Three documented regimes, a state-vector interface any external program can drive, and a pluggable time integrator. About two seconds per model day on one core.</p>
-      <p style="margin:0"><a class="btn primary" href="swesphere/">About swesphere</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a></p>
+      <p style="margin:0"><a class="btn primary" href="swesphere/">About swesphere</a> &nbsp; <a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://pypi.org/project/swesphere/">PyPI</a></p>
     </div>
   </div>
 </div></section>
 
 <section class="tint" id="teda"><div class="wrap">
-  <div class="sec-head"><h2>TEDA</h2><p>A lightweight, object-oriented Python toolbox for teaching ensemble-based data assimilation. Students pick a method, a toy model and an observation setup, run the simulation and look at how background and analysis errors evolve.</p></div>
+  <div class="sec-head"><h2>TEDA</h2><p>A lightweight, object-oriented Python toolbox for ensemble-based data assimilation. TEDA implements the filters and the Lorenz-96 model; larger models come from separate packages, <a href="qg-python/">QG-Python</a> and <a href="swesphere/">swesphere</a>, through the same state-vector interface. <code>pip install pyteda</code></p></div>
   <div class="two" style="align-items:start">
     <div class="prose">
       <h3 style="margin-top:0">How easy is it to use?</h3>
@@ -68,8 +79,9 @@ simulation.run()
 
 # background and analysis errors per step
 errb, erra = simulation.get_errors()</code></pre>
-      <p>Toy models included: the Duffing equation (2 variables), Lorenz-63 (3 variables) and Lorenz-96 (40 variables), all chaotic under the right parameters. New models and methods plug in through the same abstract classes.</p>
-      <p style="margin:0"><a class="btn dark" href="https://github.com/enino84/TEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2025.102297">Paper, SoftwareX 2025</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1007/978-3-031-08760-8_60">ICCS 2022</a></p>
+      <p>A model is anything with a state vector and a <code>propagate</code> call, so the same filters run on Lorenz-96, on the quasi-geostrophic model of QG-Python and on the shallow-water sphere of swesphere without changing a line of the assimilation code.</p>
+      <p style="margin:0 0 22px"><a class="btn dark" href="https://github.com/enino84/TEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2025.102297">Paper, SoftwareX 2025</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.1007/978-3-031-08760-8_60">ICCS 2022</a></p>
+      <div class="cite"><p><b>If you use TEDA, please cite</b></p><p>Nino-Ruiz, E. D. (2025). TEDA: A lightweight Python framework for educational data assimilation. <i>SoftwareX</i>, 31, 102297. <a href="https://doi.org/10.1016/j.softx.2025.102297">doi:10.1016/j.softx.2025.102297</a></p><p style="margin:0">Nino-Ruiz, E. D., &amp; Valbuena, S. R. (2022). TEDA: A computational toolbox for teaching ensemble based data assimilation. In <i>Computational Science, ICCS 2022</i>, LNCS 13353. Springer. <a href="https://doi.org/10.1007/978-3-031-08760-8_60">doi:10.1007/978-3-031-08760-8_60</a></p></div>
     </div>
     <div class="prose" style="max-width:none">
       <h3 style="margin-top:0">Supported methods</h3>

@@ -14,29 +14,84 @@
 <body>
 <header class="site"><div class="wrap nav">
   <a href="../../"><img class="logo" src="../../assets/img/logo.png" alt="AML-CS: Applied Math and Computer Science Lab"></a>
-  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li><a href="../../software/" aria-current="page">Software</a></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li class="has-sub"><a href="../../software/" aria-current="page">Software</a><ul class="sub"><li><a href="../../software/pyteda/">PyTEDA-web</a></li><li><a href="../../software/qg-python/">QG-Python</a></li><li><a href="../../software/swesphere/">swesphere</a></li><li><a href="../../software/#teda">TEDA</a></li></ul></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
   <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
 </div></header>
 
 <div class="pagehead" style="padding-bottom:0"><div class="wrap" style="display:block">
   <div class="crumb"><a href="../../">Home</a> / <a href="../">Software</a> / PyTEDA-web</div>
   <h1>PyTEDA-web</h1>
-  <p style="max-width:60ch">Interactive data assimilation benchmarking in the browser: experiments run on the server, stream their results live and stay stored so you can come back and compare them.</p>
-  <div class="hero-media"><picture><source srcset="../../assets/img/figures/qg-model.webp" type="image/webp"><img src="../../assets/img/figures/qg-model.jpg" alt="1.5-layer quasi-geostrophic model: potential vorticity and streamfunction on a 193 by 193 grid"></picture></div>
+  <p style="max-width:62ch">The web interface of TEDA: set up an ensemble data assimilation experiment in the browser, run it on the server, watch the error curves arrive live, and keep every run to compare later.</p>
+  <div class="hero-media" style="background:transparent;box-shadow:none;padding:0;border-radius:0;max-width:1060px"><img src="../../assets/img/figures/pyteda-web-arch.svg" alt="Architecture of PyTEDA-web"></div>
 </div></div>
-<section style="padding-top:40px"><div class="wrap two" style="align-items:start">
-  <div class="prose">
-    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">Above: 1.5-layer quasi-geostrophic model on a 193 × 193 grid, potential vorticity (left) and streamfunction (right), one of the benchmark models in PyTEDA-web.</p>
-    <h2 style="margin-top:8px">What it does</h2>
-    <p>PyTEDA-web is a FastAPI platform built on the TEDA code base. Instead of running scripts locally, you configure a data assimilation experiment in the browser, launch it, and watch the output arrive in real time while it runs on the server.</p>
-    <p>Every experiment is tracked and persisted, so results from different methods, ensemble sizes, observation networks or models can be compared side by side days later, without rerunning anything.</p>
-    <h2>Benchmark models</h2>
-    <p>Besides the Duffing, Lorenz-63 and Lorenz-96 models inherited from TEDA, PyTEDA-web adds larger test cases such as the 1.5-layer quasi-geostrophic model shown above, which brings realistic multi-scale dynamics to the benchmarks at a size that still runs interactively.</p>
+
+<section style="padding-top:40px"><div class="wrap"><div class="prose" style="max-width:76ch;margin:0 auto">
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left;margin:0 0 8px">Above: how a run travels through PyTEDA-web. The browser talks to a FastAPI back end; TEDA does the assimilation; the models are Lorenz-96 inside TEDA, or QG-Python and swesphere installed next to it; PostgreSQL keeps every run.</p>
+
+    <h2 style="margin-top:8px">What it is</h2>
+    <p>TEDA is a Python library: you write a script, run it, and plot the errors. PyTEDA-web puts the same experiments behind a web page. You pick a model, one or more method instances (the same filter with different localization radii, say), an ensemble size, an observation network and a seed, and launch the run. The back end executes it with TEDA and streams the background and analysis errors to the browser step by step, so you see the filters diverge or converge while they run.</p>
+    <p>Nothing is lost when the page closes. Each run, its configuration and its results go to a PostgreSQL database, so a benchmark done today can be reopened, compared with another one, or downloaded as CSV weeks later.</p>
+
+    <h2>Models</h2>
+    <p>TEDA ships the Lorenz-96 system (40 variables, forcing F = 8), which is what the public demo runs. Larger models are not part of TEDA: they are separate packages that expose the same interface, a state vector and a <code>propagate(x, [t0, t1])</code> call. Two are available today, both from this lab:</p>
+    <ul>
+      <li><a href="../qg-python/">QG-Python</a>: the 1.5-layer quasi-geostrophic model, 97 &times; 97 by default, with RK4 and Leapfrog integrators.</li>
+      <li><a href="../swesphere/">swesphere</a>: the shallow-water equations on the rotating sphere, 66 &times; 132 and three fields, with documented flow regimes.</li>
+    </ul>
+    <p>Install either one in the back end environment and it appears in the model list.</p>
+
     <h2>Methods</h2>
-    <p>All ensemble-based methods available in TEDA can be benchmarked: the stochastic EnKF and its Cholesky and modified Cholesky variants, shrinkage precision estimators, B-localization, EnSRF, ETKF, LETKF and LEnKF.</p>
-    <p style="margin-top:28px"><a class="btn dark" href="https://github.com/enino84/pyTEDA">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2026.102738">Paper, SoftwareX 2026</a></p>
+    <p>Every ensemble-based method of TEDA can be run: the stochastic EnKF, its Cholesky and modified Cholesky variants, the shrinkage precision estimator, B-localization, EnSRF, ETKF, LETKF and LEnKF. A run can hold several instances of a method with different parameters, which is how the platform is used for benchmarking.</p>
+</div></div></section>
+
+<section class="tint"><div class="wrap">
+  <div class="sec-head"><h2>Functionality</h2><p>The front end uses the same HTTP API that scripts can call. These are the entry points of the back end.</p></div>
+  <div class="prose" style="max-width:none">
+    <table class="api"><thead><tr><th>Endpoint</th><th>What it does</th></tr></thead><tbody><tr><td><code>GET /api/methods</code></td><td>the assimilation methods available, with their parameters</td></tr><tr><td><code>GET /api/models</code></td><td>the models the server can run: Lorenz-96 (built in), QG-Python and swesphere when installed</td></tr><tr><td><code>POST /api/runs</code></td><td>create a run: model, method instances (for example LETKF with r = 1 and r = 2), ensemble size, observation setup, seed</td></tr><tr><td><code>GET /api/runs</code></td><td>every run stored in the database, with its configuration and status</td></tr><tr><td><code>GET /api/runs/{id}</code></td><td>one run and its results</td></tr><tr><td><code>GET /api/runs/{id}/stream</code></td><td>Server-Sent Events: background and analysis errors per assimilation step while the run is going</td></tr><tr><td><code>GET /api/runs/{id}/csv</code></td><td>download the results as CSV</td></tr></tbody></table>
+    <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left">The interactive documentation of the API is served by FastAPI at <code>/docs</code> once the back end is running.</p>
   </div>
-  <div class="facts"><dl><div><dt>Package</dt><dd>PyTEDA-web</dd></div><div><dt>Type</dt><dd>Web platform · FastAPI · Python</dd></div><div><dt>Paper</dt><dd>SoftwareX 34, 102738 (2026)</dd></div><div><dt>Author</dt><dd>Elias D. Nino-Ruiz</dd></div><div><dt>Builds on</dt><dd>TEDA (SoftwareX 2025)</dd></div><div><dt>Code</dt><dd>github.com/enino84/pyTEDA</dd></div><div><dt>License</dt><dd>Open source</dd></div></dl></div>
+</div></section>
+
+<section><div class="wrap"><div class="prose" style="max-width:76ch;margin:0 auto">
+    <h2 style="margin-top:0">How it is put together</h2>
+    <ul>
+      <li><b>Front end</b>: React 18 with Vite, charts in Plotly.js, served by Nginx.</li>
+      <li><b>Back end</b>: FastAPI in Python. Creates runs, executes them through TEDA and streams results over Server-Sent Events.</li>
+      <li><b>Compute</b>: the <code>pyteda</code> package (filters and Lorenz-96) plus any model package installed next to it.</li>
+      <li><b>Storage</b>: PostgreSQL through asyncpg, holding runs, method instances and results.</li>
+      <li><b>Deployment</b>: three Docker Compose services, <code>frontend</code>, <code>backend</code> and <code>postgres</code>.</li>
+    </ul>
+
+    <h2>Running it</h2>
+    <pre><code>git clone https://github.com/enino84/pyteda-web
+cd pyteda-web
+docker compose up --build        # then open http://localhost:3000</code></pre>
+    <p>For development with hot reload, start only <code>postgres</code> and <code>backend</code> with Docker Compose, then <code>npm install &amp;&amp; npm run dev</code> inside <code>frontend/</code> (served at <code>http://localhost:5173</code>).</p>
+
+    <h2>Papers and how to cite</h2>
+    <p>If PyTEDA-web is useful in your work, we would appreciate a citation. The platform paper describes the architecture; the TEDA papers describe the assimilation library it runs.</p>
+    <div class="cite">
+      <p><b>PyTEDA-web</b></p>
+      <p>Nino-Ruiz, E. D. (2026). PyTEDA-web: A FastAPI platform for interactive data assimilation benchmarking with real-time streaming and persistent experiment tracking. <i>SoftwareX</i>, 34, 102738. <a href="https://doi.org/10.1016/j.softx.2026.102738">doi:10.1016/j.softx.2026.102738</a></p>
+      <pre><code>@article{ninoruiz2026pytedaweb,
+  title   = {PyTEDA-web: A FastAPI platform for interactive data assimilation
+             benchmarking with real-time streaming and persistent experiment tracking},
+  author  = {Nino-Ruiz, Elias D.},
+  journal = {SoftwareX},
+  volume  = {34},
+  pages   = {102738},
+  year    = {2026},
+  doi     = {10.1016/j.softx.2026.102738}
+}</code></pre>
+    </div>
+    <div class="cite">
+      <p><b>TEDA</b></p>
+      <p>Nino-Ruiz, E. D. (2025). TEDA: A lightweight Python framework for educational data assimilation. <i>SoftwareX</i>, 31, 102297. <a href="https://doi.org/10.1016/j.softx.2025.102297">doi:10.1016/j.softx.2025.102297</a></p>
+      <p style="margin:0">Nino-Ruiz, E. D., &amp; Valbuena, S. R. (2022). TEDA: A computational toolbox for teaching ensemble based data assimilation. In <i>Computational Science, ICCS 2022</i>, Lecture Notes in Computer Science 13353. Springer. <a href="https://doi.org/10.1007/978-3-031-08760-8_60">doi:10.1007/978-3-031-08760-8_60</a></p>
+    </div>
+  </div>
+  <div style="max-width:76ch;margin:44px auto 0"><div class="facts"><dl><div><dt>Package</dt><dd>PyTEDA-web</dd></div><div><dt>Type</dt><dd>Web platform · React, FastAPI, PostgreSQL</dd></div><div><dt>Runs</dt><dd>TEDA (<code>pip install pyteda</code>)</dd></div><div><dt>Models</dt><dd>Lorenz-96 built in · QG-Python · swesphere</dd></div><div><dt>Paper</dt><dd>SoftwareX 34, 102738 (2026)</dd></div><div><dt>Author</dt><dd>Elias D. Nino-Ruiz</dd></div><div><dt>Code</dt><dd>github.com/enino84/pyteda-web</dd></div><div><dt>License</dt><dd>Open source</dd></div></dl></div></div>
+  <p style="max-width:76ch;margin:28px auto 0"><a class="btn dark" href="https://github.com/enino84/pyteda-web">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1016/j.softx.2026.102738">Paper, SoftwareX 2026</a></p>
 </div></section>
 
 <footer class="site"><div class="wrap">

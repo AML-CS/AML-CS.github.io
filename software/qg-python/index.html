@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QG-Python · AML-CS</title>
+<meta name="description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<meta property="og:title" content="QG-Python · AML-CS"><meta property="og:description" content="Applied Math and Computer Science Lab at Universidad del Norte, Barranquilla, Colombia.">
+<link rel="icon" href="../../assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+
+</head>
+<body>
+<header class="site"><div class="wrap nav">
+  <a href="../../"><img class="logo" src="../../assets/img/logo.png" alt="AML-CS: Applied Math and Computer Science Lab"></a>
+  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li class="has-sub"><a href="../../software/" aria-current="page">Software</a><ul class="sub"><li><a href="../../software/pyteda/">PyTEDA-web</a></li><li><a href="../../software/qg-python/">QG-Python</a></li><li><a href="../../software/swesphere/">swesphere</a></li><li><a href="../../software/#teda">TEDA</a></li></ul></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
+</div></header>
+
+<div class="pagehead"><div class="wrap" style="display:block">
+  <div class="crumb"><a href="../../">Home</a> / <a href="../">Software</a> / QG-Python</div>
+  <h1>QG-Python</h1>
+  <p style="max-width:62ch">A reproducible 1.5-layer quasi-geostrophic model in Python: a direct sparse Helmholtz solver, three time integrators under one API, and the diagnostics that tell you how stable and how predictable the flow is.</p>
+</div></div>
+
+<section style="padding:56px 0 0"><div class="wrap">
+  <figure class="plate"><picture><source srcset="../../assets/img/figures/qg-model.webp" type="image/webp"><img src="../../assets/img/figures/qg-model.jpg" alt="1.5-layer quasi-geostrophic model: potential vorticity and streamfunction on a 193 by 193 grid"></picture><figcaption>QG-Python at mrefin = 7 (193 &times; 193). Potential vorticity <i>q</i> on the left, streamfunction <i>&psi;</i> on the right, in the statistically stationary turbulent regime.</figcaption></figure>
+</div></section>
+
+<section style="padding-top:40px"><div class="wrap"><div class="prose" style="max-width:76ch;margin:0 auto">
+
+    <h2 style="margin-top:8px">What it is</h2>
+    <p>The 1.5-layer quasi-geostrophic model is the classic testbed for mesoscale ocean variability, Rossby waves, the inverse energy cascade and ensemble data assimilation. QG-Python is a faithful port of the QG-C model of Sakov (2024) in which the legacy Fortran multi-grid Helmholtz solver is replaced by a direct sparse LU factorization (SuperLU through SciPy). The streamfunction inversion is then exact to machine precision and deterministic, so the only numerical error left is the one introduced by the time integrator, which is exactly what the package is built to measure.</p>
+    <p>Three integrators are exposed under a single API: the classical fourth-order Runge-Kutta scheme, the Leapfrog scheme with the Robert-Asselin (RA) filter, and the Leapfrog scheme with the Robert-Asselin-Williams (RAW) filter. Diagnostic modules compute the linearized operator, its leading eigenspectrum and the maximum Lyapunov exponent. The default configuration is the 97 &times; 97 grid of QG-C (mrefin = 6, 9,025 interior degrees of freedom), unchanged, so results are comparable with the body of prior work that uses QG-C as a dynamical core.</p>
+
+    <h2>What the dataset says</h2>
+    <ul>
+      <li>The classical von Neumann bound on the Leapfrog time step is resolution-dependent: at mrefin = 6 it underestimates the true stability limit by a factor of 13.7, at mrefin = 5 it overestimates it by 1.54.</li>
+      <li>The maximum Lyapunov exponent of QG-C is &sigma;<sub>1</sub> = 0.03178, a Lyapunov time of 31.5 time units, beyond which trajectory-based comparison of schemes is meaningless and only statistics can be compared.</li>
+      <li>The RA filter reduces kinetic energy by about 21% and enstrophy by about 46% relative to RK4; the RAW filter brings both biases under 4% at the same cost, and is the recommended drop-in replacement for long integrations.</li>
+    </ul>
+</div></div></section>
+
+<section class="tint"><div class="wrap">
+  <div class="sec-head"><h2>API</h2><p>A small package on top of NumPy and SciPy. Configuration (resolution, physical parameters, integrator, time step, horizon, output cadence) lives in a YAML file.</p></div>
+  <div class="prose" style="max-width:none">
+    <table class="api"><thead><tr><th>Call</th><th>What it gives you</th></tr></thead><tbody><tr><td><code>QGModel(config)</code></td><td>build a model from a YAML configuration file; assembles and factorizes the Helmholtz operator once</td></tr><tr><td><code>model.rhs(q)</code></td><td>the right-hand side F(q) of the potential vorticity equation, as an array shaped like q</td></tr><tr><td><code>model.step_rk4(q, dt)</code></td><td>one fourth-order Runge-Kutta step</td></tr><tr><td><code>model.step_lf_ra(q_prev, q, dt, alpha)</code></td><td>one Leapfrog step with the Robert-Asselin filter of strength alpha</td></tr><tr><td><code>model.step_lf_raw(q_prev, q, dt, alpha, beta)</code></td><td>one Leapfrog step with the Robert-Asselin-Williams filter</td></tr><tr><td><code>model.linearize(q_eq, eps)</code></td><td>sparse approximation of the Jacobian of F at q_eq by centred finite differences</td></tr><tr><td><code>model.eigvals(q_eq, k=200)</code></td><td>the k leading eigenvalues of the Jacobian via ARPACK</td></tr><tr><td><code>model.lyapunov_benettin(q_eq, T, n_renorm)</code></td><td>the maximum Lyapunov exponent by the Benettin algorithm, with its convergence trace</td></tr></tbody></table>
+    <pre><code>from qg_python import QGModel
+
+model = QGModel("config/mrefin6.yaml")     # 97 x 97, factorizes the Helmholtz operator
+q = model.restart("data/q_eq_mrefin6.npz") # equilibrium state, t = 1e5
+for _ in range(1000):
+    q = model.step_rk4(q, dt=1.0)
+
+J = model.linearize(q, eps=1e-6)           # sparse Jacobian at the equilibrium
+lam = model.eigvals(q, k=200)              # leading eigenvalues (ARPACK)
+sigma1, trace = model.lyapunov_benettin(q, T=2000, n_renorm=200)</code></pre>
+  </div>
+</div></section>
+
+<section><div class="wrap"><div class="prose" style="max-width:76ch;margin:0 auto">
+    <h2 style="margin-top:0">Getting it</h2>
+    <pre><code>git clone https://github.com/enino84/qg-leapfrog-stability
+cd qg-leapfrog-stability
+pip install -r requirements.txt</code></pre>
+    <p>The Zenodo archive is the authoritative citation target: it holds the source code and the simulation outputs (equilibrium restart fields at both resolutions, eigenvalue clouds, the Benettin trace and the time-resolved diagnostics of every run). The GitHub mirror tracks the source, the shell drivers and the plain-text summaries.</p>
+
+    <h2>Reproducing the paper</h2>
+    <p>One command regenerates every experiment: the spin-up from rest, the RK4 reference run, the LF + RA and LF + RAW runs, the &alpha; sensitivity sweep over {0.05, 0.10, 0.20, 0.40}, the eigenspectra at both resolutions, the Lyapunov estimate and all the figures. About 4 to 5 hours on one laptop core, no GPU, bitwise reproducible given the same NumPy, SciPy and ARPACK versions. Each step can also be run on its own.</p>
+    <pre><code>bash run_all.sh</code></pre>
+
+    <h2>Paper and how to cite</h2>
+    <p>If you use QG-Python or the dataset, please cite the Data Services Article and the Zenodo record.</p>
+    <div class="cite">
+      <p>Nino-Ruiz, E. D. (2026). QG-Python: A reproducible 1.5-layer quasi-geostrophic modelling service with direct sparse solvers, spectral stability diagnostics and filter sensitivity data. <i>Geoscience Data Journal</i>, 13, e70107. <a href="https://doi.org/10.1002/gdj3.70107">doi:10.1002/gdj3.70107</a></p>
+      <p>Nino-Ruiz, E. D. (2026). QG-Python: a reproducible 1.5-layer quasi-geostrophic modelling service with spectral stability and filter sensitivity diagnostics (Version 1.0) [Software and dataset]. Zenodo. <a href="https://doi.org/10.5281/zenodo.22168803">doi:10.5281/zenodo.22168803</a></p>
+      <pre><code>@article{ninoruiz2026qgpython,
+  title   = {QG-Python: A reproducible 1.5-layer quasi-geostrophic modelling service
+             with direct sparse solvers, spectral stability diagnostics and filter
+             sensitivity data},
+  author  = {Nino-Ruiz, Elias D.},
+  journal = {Geoscience Data Journal},
+  volume  = {13},
+  pages   = {e70107},
+  year    = {2026},
+  doi     = {10.1002/gdj3.70107}
+}</code></pre>
+    </div>
+  </div>
+  <div style="max-width:76ch;margin:44px auto 0"><div class="facts"><dl><div><dt>Package</dt><dd>QG-Python</dd></div><div><dt>Type</dt><dd>Model · Python · NumPy, SciPy (SuperLU, ARPACK)</dd></div><div><dt>Default grid</dt><dd>97 &times; 97 (mrefin = 6), 9,025 interior points</dd></div><div><dt>Integrators</dt><dd>RK4 · Leapfrog + RA · Leapfrog + RAW</dd></div><div><dt>Diagnostics</dt><dd>Jacobian, eigenspectrum, Lyapunov exponent</dd></div><div><dt>Paper</dt><dd>Geoscience Data Journal 13, e70107 (2026)</dd></div><div><dt>Dataset</dt><dd>Zenodo 10.5281/zenodo.22168803</dd></div><div><dt>Author</dt><dd>Elias D. Nino-Ruiz</dd></div><div><dt>Code</dt><dd>github.com/enino84/qg-leapfrog-stability</dd></div><div><dt>License</dt><dd>MIT (code) · CC-BY 4.0 (data)</dd></div></dl></div></div>
+  <p style="max-width:76ch;margin:28px auto 0"><a class="btn dark" href="https://github.com/enino84/qg-leapfrog-stability">GitHub</a> &nbsp; <a class="btn primary" href="https://doi.org/10.1002/gdj3.70107">Paper</a> &nbsp; <a class="btn ghost" style="border-color:var(--rule);color:var(--navy)" href="https://doi.org/10.5281/zenodo.22168803">Zenodo</a></p>
+</div></section>
+
+<footer class="site"><div class="wrap">
+  <div>
+    <a href="../../"><img class="logo-foot" src="../../assets/img/logo.png" alt="AML-CS"></a>
+    <p class="contact">Universidad del Norte, Km 5 Vía Puerto Colombia<br>Barranquilla, Colombia.<br><a href="mailto:enino@uninorte.edu.co">enino@uninorte.edu.co</a></p>
+  </div>
+  <div><h5>Lab</h5><ul><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects &amp; funding</a></li><li><a href="../../people/">People</a></li></ul></div>
+  <div><h5>Output</h5><ul><li><a href="../../publications/">Publications</a></li><li><a href="../../talks/">Talks &amp; events</a></li><li><a href="https://github.com/AML-CS">GitHub</a></li></ul></div>
+  <div><h5>Tools</h5><ul><li><a href="../../software/">Software</a></li><li><a href="../../resources/">HPC guides</a></li><li><a href="../../wrf-baq-0.5km/">WRF-BAQ 0.5 km</a></li></ul></div>
+  <div class="copy"><span>© 2026 AML-CS · Universidad del Norte</span><span>Director: <a href="https://enino84.github.io/">Elias D. Nino-Ruiz, Ph.D.</a></span></div>
+</div></footer>
+<script src="../../assets/js/site.js"></script>
+</body></html>

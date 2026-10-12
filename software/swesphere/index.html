@@ -14,7 +14,7 @@
 <body>
 <header class="site"><div class="wrap nav">
   <a href="../../"><img class="logo" src="../../assets/img/logo.png" alt="AML-CS: Applied Math and Computer Science Lab"></a>
-  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li><a href="../../software/" aria-current="page">Software</a></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
+  <nav aria-label="Main"><ul><li><a href="../../">Home</a></li><li><a href="../../#research">Research</a></li><li><a href="../../projects/">Projects</a></li><li><a href="../../publications/">Publications</a></li><li class="has-sub"><a href="../../software/" aria-current="page">Software</a><ul class="sub"><li><a href="../../software/pyteda/">PyTEDA-web</a></li><li><a href="../../software/qg-python/">QG-Python</a></li><li><a href="../../software/swesphere/">swesphere</a></li><li><a href="../../software/#teda">TEDA</a></li></ul></li><li><a href="../../people/">People</a></li><li><a href="../../talks/">Talks & events</a></li><li><a href="../../resources/">Resources</a></li><li><a class="cta" href="mailto:enino@uninorte.edu.co">Join the lab</a></li></ul></nav>
   <button class="burger" aria-expanded="false" aria-label="Open menu">Menu</button>
 </div></header>
 
@@ -29,6 +29,7 @@
   <div class="prose" style="max-width:76ch;margin:0 auto">
     <p style="font-family:var(--display);font-size:13px;color:var(--muted);text-align:left;max-width:76ch;margin:0 auto 8px">Above: a state of the <code>two_jets</code> record. Zonal wind, meridional wind, and the departure of the depth from its zonal mean drawn as relief (exaggerated). The polar caps under the sponge are grey.</p>
 
+    <p><span class="install">pip install swesphere</span></p>
     <h2 style="margin-top:8px">What it is</h2>
     <p>The shallow-water equations on a sphere are the smallest system that carries the ingredients of large-scale atmospheric flow: a balance relation between wind and mass, fast gravity waves alongside slow balanced motion, and barotropic instability that sustains turbulence. swesphere solves them with vector-invariant momentum equations and a flux-form continuity equation, on a regular latitude-longitude grid with an exact zonal derivative by FFT, second-order centred meridional differences and fourth-order Runge-Kutta stepping. Dissipation is an exponential filter in spherical harmonics plus a sponge on the wind at the polar caps.</p>
     <p>At the default truncation the grid is 66 &times; 132 and the state has 26,136 variables, which integrates in about two seconds per model day on one core: small enough for hundreds of forecasts on a workstation, large enough to behave like the atmosphere.</p>
@@ -161,7 +162,11 @@ model, x0 = presets.two_jets(scheme="euler", dt=30.0)</code></pre>
 
     <h2>Verified, and its limits measured</h2>
     <p>On the steady zonal flow of Williamson et al.’s test case 2 the normalized <i>l</i><sub>2</sub> error of the depth after five days is 2.2&times;10<sup>-4</sup> at the default truncation and 5.5&times;10<sup>-5</sup> at twice the resolution: second order, as expected from the centred meridional differences. The Galewsky barotropic instability reproduces the published reference solution, with the global mass conserved to 10<sup>-6</sup> and the total energy to 10<sup>-4</sup> over ten days.</p>
-    <p>Two limits are documented rather than hidden. The polar sponge, not the discretization, dominates the error of the default configuration on tests whose flow extends to the poles. And because the filter acts every few steps rather than every few seconds, the eddy amplitude of a regime is set by the interval between filter applications, not by the time step: runs that share an interval and differ by a factor of six in the time step agree within the natural variability of the flow.</p>
+    <p>Two limits of the model are worth knowing. The polar sponge, not the discretization, dominates the error of the default configuration on tests whose flow extends to the poles. And because the filter acts every few steps rather than every few seconds, the eddy amplitude of a regime is set by the interval between filter applications, not by the time step: runs that share an interval and differ by a factor of six in the time step agree within the natural variability of the flow.</p>
+
+    <h2>Paper and how to cite</h2>
+    <p>The software paper is under review at <i>SoftwareX</i>. Until it appears, please cite the package through its <code>CITATION.cff</code> (GitHub shows it under "Cite this repository"); this page will carry the DOI as soon as it is assigned.</p>
+    <div class="cite"><p style="margin:0">Nino-Ruiz, E. D. (2026). swesphere: Shallow-water equations on the rotating sphere, a verified model with documented, reproducible flow regimes (Version 0.3.0) [Software]. <a href="https://github.com/enino84/swesphere">github.com/enino84/swesphere</a> · <a href="https://pypi.org/project/swesphere/">pypi.org/project/swesphere</a></p></div>
 
     <h2>Reproducing the experiments</h2>
     <p>Each experiment is a Docker Compose service that writes its results as CSV after every case; the figures are regenerated from those files.</p>
@@ -174,8 +179,8 @@ docker compose run -d footprint      # after regimes
 docker compose run --rm figures      # after all</code></pre>
 
   </div>
-  <div style="max-width:76ch;margin:44px auto 0"><div class="facts"><dl><div><dt>Package</dt><dd>swesphere</dd></div><div><dt>Type</dt><dd>Model &middot; Python &middot; NumPy, SciPy, pyshtools</dd></div><div><dt>State</dt><dd>26,136 variables (66 &times; 132, three fields)</dd></div><div><dt>Cost</dt><dd>about 2 s per model day, one core</dd></div><div><dt>Regimes</dt><dd>waves, one_jet, two_jets</dd></div><div><dt>Author</dt><dd>Elias D. Nino-Ruiz</dd></div><div><dt>Code</dt><dd>github.com/enino84/swesphere</dd></div><div><dt>License</dt><dd>MIT</dd></div></dl></div></div>
-  <p style="max-width:76ch;margin:28px auto 0"><a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a></p>
+  <div style="max-width:76ch;margin:44px auto 0"><div class="facts"><dl><div><dt>Package</dt><dd>swesphere</dd></div><div><dt>Type</dt><dd>Model &middot; Python &middot; NumPy, SciPy, pyshtools</dd></div><div><dt>State</dt><dd>26,136 variables (66 &times; 132, three fields)</dd></div><div><dt>Cost</dt><dd>about 2 s per model day, one core</dd></div><div><dt>Regimes</dt><dd>waves, one_jet, two_jets</dd></div><div><dt>Paper</dt><dd>SoftwareX, submitted (2026)</dd></div><div><dt>Author</dt><dd>Elias D. Nino-Ruiz</dd></div><div><dt>Code</dt><dd>github.com/enino84/swesphere</dd></div><div><dt>Install</dt><dd>pip install swesphere</dd></div><div><dt>License</dt><dd>MIT</dd></div></dl></div></div>
+  <p style="max-width:76ch;margin:28px auto 0"><a class="btn dark" href="https://github.com/enino84/swesphere">GitHub</a> &nbsp; <a class="btn primary" href="https://pypi.org/project/swesphere/">PyPI</a></p>
   <div class="prose" style="max-width:76ch;margin:0 auto;display:none">
   </div>
 </div></section>
